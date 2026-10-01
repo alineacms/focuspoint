@@ -60,6 +60,11 @@ export interface Params {
    * the most importance in view in typical crops, 0..1.
    */
   fit: number
+  /**
+   * Placements keeping within this fraction of the best score count as
+   * equal; the one nearest the subject is used.
+   */
+  tolerance: number
   /** Exponent applied to the map before placement; higher favours the peak. */
   emphasis: number
   /**
@@ -70,18 +75,19 @@ export interface Params {
 }
 
 export const defaults: Params = {
-  size: 64,
-  mbd: 1.5,
-  border: 1,
+  size: 48,
+  mbd: 2,
+  border: 0,
   skin: 0.5,
   center: 1,
-  blur: 0.08,
-  gamma: 2,
-  intensity: 0.25,
-  threshold: 0.6,
-  radius: 0.15,
-  fit: 0,
-  emphasis: 2,
+  blur: 0,
+  gamma: 1,
+  intensity: 1,
+  threshold: 0,
+  radius: 0.4,
+  fit: 0.75,
+  tolerance: 0.01,
+  emphasis: 3,
   focus: 0
 }
 
@@ -271,7 +277,7 @@ export function focusPoint(image: ImageDataLike, options: Options = {}): FocusPo
         const dx = x + 0.5 - cx, dy = y + 0.5 - cy
         weights[i] = Math.pow(data[i]!, p.emphasis) * (s2 ? Math.exp(-(dx * dx + dy * dy) / s2) : 1)
       }
-    const at = place(weights, width, height)
+    const at = place(weights, width, height, {x: cx / width, y: cy / height}, p.tolerance)
     cx += (at.x * width - cx) * p.fit
     cy += (at.y * height - cy) * p.fit
   }

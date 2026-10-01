@@ -18,6 +18,7 @@ const grid: {[K in keyof Params]?: Array<Params[K]>} = {
   threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
   radius: [0, 0.1, 0.15, 0.2, 0.3, 0.4],
   fit: [0, 0.25, 0.5, 0.75, 1],
+  tolerance: [0, 0.005, 0.01, 0.02, 0.05],
   emphasis: [1, 2, 3, 4],
   focus: [0, 0.1, 0.2, 0.3, 0.5]
 }
