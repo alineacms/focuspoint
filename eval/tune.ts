@@ -1,6 +1,8 @@
 // Coordinate-descent search over the algorithm's parameters.
 // Tunes on even-numbered samples and reports held-out odd-numbered samples.
-// Usage: bun eval/tune.ts <dataset-dir>...
+// Usage: bun eval/tune.ts [--hit 0.5] <dataset-dir>...
+// The objective blends the hit rate (weight --hit) with mean crop retention.
+import {parseArgs} from 'node:util'
 import {defaults, type Params} from '../src/index.ts'
 import {evaluate, format, header, loadDataset, withOptions, type Sample} from './run.ts'
 
@@ -24,12 +26,16 @@ const grid: {[K in keyof Params]?: Array<Params[K]>} = {
 }
 
 type Result = Awaited<ReturnType<typeof evaluate>>
+const {values, positionals: dirs} = parseArgs({
+  allowPositionals: true,
+  options: {hit: {type: 'string', default: '0.5'}}
+})
+const hitWeight = Number(values.hit)
 const objective = (r: Result) => {
   const c = Object.values(r.crops)
-  return r.hit * 0.5 + (c.reduce((a, b) => a + b, 0) / c.length) * 0.5
+  return r.hit * hitWeight + (c.reduce((a, b) => a + b, 0) / c.length) * (1 - hitWeight)
 }
 
-const dirs = process.argv.slice(2)
 const all: Array<Sample> = []
 for (const dir of dirs) all.push(...(await loadDataset(dir)))
 const train = all.filter((_, i) => i % 2 === 0)
@@ -60,3 +66,4 @@ console.log('best', best)
 console.log(header)
 console.log(format('defaults', await evaluate(test, withOptions(defaults))))
 console.log(format('tuned', await evaluate(test, withOptions(best))))
+console.log(JSON.stringify(best))
