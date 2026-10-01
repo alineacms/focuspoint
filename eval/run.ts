@@ -1,9 +1,11 @@
 // Evaluate focus point methods against salient object masks.
 // Usage: bun eval/run.ts <dataset-dir> [--limit N] [--methods center,smartcrop,focuspoint]
-// A dataset dir holds images/*.jpg and masks/*.png with matching basenames.
+// A dataset dir holds images/*.jpg and masks/*.png with matching basenames,
+// or fixations/*.png density maps (scaled so their peak is 1).
 import sharp from 'sharp'
 import smartcropModule from 'smartcrop'
 import {basename, join} from 'node:path'
+import {existsSync} from 'node:fs'
 import {readdir} from 'node:fs/promises'
 import {parseArgs} from 'node:util'
 import {focusPoint, type Options} from '../src/index.ts'
@@ -25,14 +27,17 @@ export interface Sample {
 /** Load every image/mask pair at evaluation resolution (256px). */
 export async function loadDataset(dir: string, limit = Infinity): Promise<Array<Sample>> {
   const masks = new Map<string, string>()
-  for (const f of await readdir(join(dir, 'masks')))
-    masks.set(f.replace(/\.\w+$/, ''), join(dir, 'masks', f))
+  const fixations = existsSync(join(dir, 'fixations'))
+  const gt = join(dir, fixations ? 'fixations' : 'masks')
+  for (const f of await readdir(gt)) masks.set(f.replace(/\.\w+$/, ''), join(gt, f))
   const images = (await readdir(join(dir, 'images')))
     .filter(f => masks.has(f.replace(/\.\w+$/, '')))
     .sort()
-    .slice(0, limit)
+  // Spread a limited sample evenly over the dataset
+  const step = Math.max(1, images.length / limit)
+  const picked = images.length > limit ? Array.from({length: limit}, (_, i) => images[Math.floor(i * step)]!) : images
   return Promise.all(
-    images.map(async f => {
+    picked.map(async f => {
       const name = f.replace(/\.\w+$/, '')
       const image = await load(join(dir, 'images', f), 256)
       const raw = await sharp(masks.get(name)!)
@@ -41,7 +46,12 @@ export async function loadDataset(dir: string, limit = Infinity): Promise<Array<
         .raw()
         .toBuffer()
       const data = new Float32Array(image.width * image.height)
-      for (let i = 0; i < data.length; i++) data[i] = raw[i]! / 255
+      let peak = 255
+      if (fixations) {
+        peak = 1
+        for (let i = 0; i < data.length; i++) if (raw[i]! > peak) peak = raw[i]!
+      }
+      for (let i = 0; i < data.length; i++) data[i] = raw[i]! / peak
       return {name, image, mask: {width: image.width, height: image.height, data}}
     })
   )
