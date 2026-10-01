@@ -4,7 +4,7 @@ Ground truth comes from public salient object detection datasets, where a
 pixel mask marks the main subject(s), and from one attention dataset.
 
 ```sh
-eval/fetch.sh                  # all datasets into eval/data (~900 MB)
+eval/fetch.sh                  # all datasets into eval/data (~1.7 GB)
 eval/fetch.sh ECSSD PASCAL-S   # or a subset
 bun eval/run.ts eval/data/ECSSD eval/data/PASCAL-S
 ```
@@ -22,7 +22,7 @@ research and evaluation only. Don't redistribute them.
 | PASCAL-S | 850 | graded masks (annotator agreement) | Often several objects. Masks are thresholded at 0.5. |
 | DUTS-TE | 5019 | masks with anti-aliased edges | Standard test set, smaller subjects (15% of the image on average). |
 | MSRA10K | 10000 | binary masks | Easy, single and mostly centred subjects. |
-| SALICON | 1000 | mouse-tracking attention maps | Random subset of COCO val2014, cluttered everyday scenes, often no single subject. |
+| SALICON | 5000 | mouse-tracking attention maps | COCO val2014, cluttered everyday scenes, often no single subject. |
 
 Sources and citations:
 
@@ -38,36 +38,43 @@ Sources and citations:
 
 ## Metrics
 
-Every image is decoded at 256 px on its longest side.
+Every image is decoded at 256 px on its longest side. Ground truth is
+"importance" per pixel: a subject mask, or the SALICON attention map scaled so
+its peak is 1.
 
-- **hit**: the share of images where the point lands on the subject (mask ≥ 0.5).
-  For SALICON this means within the region that has at least half of the peak attention.
-- **dist**: the distance from the point to the subject's centroid, in normalised image coordinates.
-- **square / portrait / banner / zoom**: the fraction of the subject that is
-  still visible after cropping around the point. The crop is the largest one of
-  that shape that fits, clamped to the image:
-  - square: 1:1
-  - portrait: 9:16
-  - banner: 3:1
-  - zoom: the same aspect ratio at half the width and height
-- **avg**: the mean of the four crop scores. This is the number that matters most.
+The point is scored by how it crops. For five container shapes (3:1, 16:9,
+1:1, 4:5, 9:16), the image is cropped to the largest window of that shape. The
+window is centred on the point and clamped to the image. Only one axis gets
+cropped, as with `object-fit: cover`.
+
+- **kept**: the share of total importance inside the window, averaged over the
+  five shapes. This is the main number.
+- **peak**: the share of crops that contain the most important spot, which is
+  the peak of the lightly blurred ground truth (for example the face most
+  people looked at).
+- **hit**: whether the point lands on the subject (importance ≥ 0.5). This is
+  secondary: a good point may deliberately sit off-centre or near an edge.
 
 Baselines:
 
-- **oracle**: the true centroid of the mask. This is the best a single point can do.
+- **oracle**: the best single point for each image, found by exhaustive search
+  for maximum kept against the ground truth.
 - **center**: always (0.5, 0.5).
-- **smartcrop**: [smartcrop.js](https://github.com/jwagner/smartcrop.js). It is
-  run separately for each crop shape, so it gets the target aspect ratio, which
-  our point does not. For hit and dist its square crop centre is used.
+- **smartcrop**: the focus point as Alinea derives it today, which is the
+  centre of [smartcrop.js](https://github.com/jwagner/smartcrop.js)'s best
+  100×100 crop.
+
+`metrics.ts` can also model CSS `object-position` cropping (`mode: 'css'`),
+but this isn't scored by default.
 
 ## Tools
 
 - `run.ts`: the benchmark. `--limit N` samples N images evenly, and `--methods` picks which methods to run.
 - `tune.ts`: a coordinate descent over the parameters. It tunes on even-numbered
-  images and reports on odd-numbered ones. `--hit` sets how much the hit rate
-  weighs against crop retention.
-- `failures.ts`: renders the worst misses (red is the prediction, green the truth).
+  images and reports on odd-numbered ones. `--peak` sets how much peak weighs
+  against kept.
+- `failures.ts`: renders the images that lose the most against the oracle (red is the prediction, green the oracle point).
 - `debug.ts`: renders the saliency map and focus point for any images.
 
-The defaults were tuned on ECSSD and PASCAL-S with `--hit 0.2`. DUTS-TE,
-MSRA10K and SALICON were held out.
+The defaults were tuned with `--peak 0.3` on the even-numbered images of SALICON,
+ECSSD and PASCAL-S. DUTS-TE and MSRA10K were held out completely.
