@@ -9,11 +9,18 @@ const grid: {[K in keyof Params]?: Array<Params[K]>} = {
   mbd: [0, 0.5, 1, 1.5, 2],
   border: [0, 0.5, 1, 1.5, 2],
   contrast: [0, 0.25, 0.5, 1],
+  compact: [0, 0.25, 0.5, 1, 2],
+  skin: [0, 0.25, 0.5, 1],
   sharpness: [0, 0.25, 0.5, 1, 2],
   center: [0, 0.25, 0.5, 0.75, 1],
   blur: [0, 0.02, 0.04, 0.08],
   gamma: [1, 2, 3, 4],
-  merge: [0.25, 0.5, 0.75, 1]
+  merge: [0.25, 0.5, 0.75, 1],
+  edge: [0, 0.25, 0.5, 1],
+  intensity: [0, 0.25, 0.5, 0.75, 1],
+  threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
+  radius: [0, 0.1, 0.15, 0.2, 0.3, 0.4],
+  span: [0, 0.25, 0.5, 0.75, 1]
 }
 
 type Result = Awaited<ReturnType<typeof evaluate>>

@@ -235,3 +235,88 @@ export function sharpness(hi: LabImage, width: number, height: number): Float32A
     }
   return out
 }
+
+/**
+ * Colour compactness (the "distribution" measure of Perazzi et al. 2012).
+ * Pixels are binned by colour; a bin whose pixels are spread over the whole
+ * frame (sky, grass, a guardrail running edge to edge) is background, a bin
+ * whose pixels sit together is likely part of an object.
+ */
+export function compactness(img: LabImage): Float32Array {
+  const {width, height, l, a, b} = img
+  const n = width * height
+  const q = 6
+  const bins = q * q * q
+  const bin = new Int32Array(n)
+  const count = new Float32Array(bins)
+  const mx = new Float32Array(bins)
+  const my = new Float32Array(bins)
+  const mxx = new Float32Array(bins)
+  const myy = new Float32Array(bins)
+  const quant = (v: number, min: number, max: number) =>
+    Math.max(0, Math.min(q - 1, Math.floor(((v - min) / (max - min)) * q)))
+  for (let y = 0; y < height; y++)
+    for (let x = 0; x < width; x++) {
+      const i = y * width + x
+      const k = (quant(l[i]!, 0, 100) * q + quant(a[i]!, -60, 60)) * q + quant(b[i]!, -60, 60)
+      const u = x / width
+      const v = y / height
+      bin[i] = k
+      count[k]!++
+      mx[k]! += u
+      my[k]! += v
+      mxx[k]! += u * u
+      myy[k]! += v * v
+    }
+  // Pool each bin with its colour neighbours so nearby shades share stats
+  const spread = new Float32Array(bins)
+  for (let k = 0; k < bins; k++) {
+    if (!count[k]) continue
+    const bl = Math.floor(k / (q * q))
+    const ba = Math.floor(k / q) % q
+    const bb = k % q
+    let c = 0, sx = 0, sy = 0, sxx = 0, syy = 0
+    for (let dl = -1; dl <= 1; dl++)
+      for (let da = -1; da <= 1; da++)
+        for (let db = -1; db <= 1; db++) {
+          const nl = bl + dl, na = ba + da, nb = bb + db
+          if (nl < 0 || na < 0 || nb < 0 || nl >= q || na >= q || nb >= q) continue
+          const j = (nl * q + na) * q + nb
+          // Own bin counts double
+          const w = j === k ? 2 : 1
+          c += w * count[j]!
+          sx += w * mx[j]!
+          sy += w * my[j]!
+          sxx += w * mxx[j]!
+          syy += w * myy[j]!
+        }
+    const ex = sx / c, ey = sy / c
+    spread[k] = sxx / c - ex * ex + (syy / c - ey * ey)
+  }
+  const out = new Float32Array(n)
+  // A uniform distribution over the frame has a variance of 1/12 per axis
+  for (let i = 0; i < n; i++) out[i] = Math.max(0, 1 - spread[bin[i]!]! * 6)
+  return out
+}
+
+/**
+ * Skin likelihood from Lab hue and chroma. Skin tones across ethnicities
+ * share a narrow orange hue band; lightness varies widely so it is only
+ * loosely constrained.
+ */
+export function skin(img: LabImage): Float32Array {
+  const {l, a, b} = img
+  const out = new Float32Array(l.length)
+  for (let i = 0; i < l.length; i++) {
+    const L = l[i]!
+    if (L < 15 || L > 95) continue
+    const chroma = Math.hypot(a[i]!, b[i]!)
+    if (chroma < 8 || chroma > 60) continue
+    const hue = (Math.atan2(b[i]!, a[i]!) * 180) / Math.PI
+    // Peak around 50 degrees, fading out by 25 degrees either side
+    const h = Math.max(0, 1 - Math.abs(hue - 50) / 25)
+    const c = Math.min(1, (chroma - 8) / 10) * Math.min(1, (60 - chroma) / 15)
+    out[i] = h * c
+  }
+  return out
+}
