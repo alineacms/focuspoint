@@ -1,4 +1,5 @@
 import {toLab, type ImageDataLike} from './image.ts'
+import {place} from './place.ts'
 import {borderContrast, boxBlur, mbd, normalize, skin} from './saliency.ts'
 
 export interface Box {
@@ -54,6 +55,18 @@ export interface Params {
    * selected region to the centre of the subject around it. 0 disables it.
    */
   radius: number
+  /**
+   * How far to move from the subject centre towards the placement that keeps
+   * the most importance in view in typical crops, 0..1.
+   */
+  fit: number
+  /** Exponent applied to the map before placement; higher favours the peak. */
+  emphasis: number
+  /**
+   * Limit placement to the area around the subject, as a Gaussian radius
+   * relative to the image. 0 considers the whole map.
+   */
+  focus: number
 }
 
 export const defaults: Params = {
@@ -66,7 +79,10 @@ export const defaults: Params = {
   gamma: 2,
   intensity: 0.25,
   threshold: 0.6,
-  radius: 0.15
+  radius: 0.15,
+  fit: 0,
+  emphasis: 2,
+  focus: 0
 }
 
 export interface Options extends Partial<Params> {}
@@ -242,6 +258,22 @@ export function focusPoint(image: ImageDataLike, options: Options = {}): FocusPo
       cy = ny
       if (moved < 0.05) break
     }
+  }
+
+  // Shift the point so typical crops keep as much importance as possible,
+  // which pulls it towards the image edge when the subject sits near one
+  if (p.fit) {
+    const weights = new Float32Array(n)
+    const s2 = 2 * Math.pow(p.focus * Math.max(width, height), 2)
+    for (let y = 0; y < height; y++)
+      for (let x = 0; x < width; x++) {
+        const i = y * width + x
+        const dx = x + 0.5 - cx, dy = y + 0.5 - cy
+        weights[i] = Math.pow(data[i]!, p.emphasis) * (s2 ? Math.exp(-(dx * dx + dy * dy) / s2) : 1)
+      }
+    const at = place(weights, width, height)
+    cx += (at.x * width - cx) * p.fit
+    cy += (at.y * height - cy) * p.fit
   }
 
   // Box and confidence from the pixels that make up the subject

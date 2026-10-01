@@ -1,4 +1,7 @@
-/** A ground-truth subject mask, 0..1 per pixel. */
+/**
+ * Ground truth importance per pixel, 0..1: a subject mask, or a human
+ * attention map scaled so its peak is 1.
+ */
 export interface Mask {
   width: number
   height: number
@@ -10,62 +13,59 @@ export interface Point {
   y: number
 }
 
-/** Crops applied to every image when measuring how much subject survives. */
-export const crops = {
-  /** Square avatar / grid tile */
-  square: {aspect: 1, zoom: 1},
-  /** Phone story / portrait card */
-  portrait: {aspect: 9 / 16, zoom: 1},
-  /** Wide banner / hero */
-  banner: {aspect: 3, zoom: 1},
-  /** Same aspect, zoomed in 2x */
-  zoom: {aspect: 0, zoom: 2}
-} as const
-
-export type CropName = keyof typeof crops
-
-export function centroid(mask: Mask): Point {
-  let sx = 0, sy = 0, s = 0
-  for (let y = 0; y < mask.height; y++)
-    for (let x = 0; x < mask.width; x++) {
-      const v = mask.data[y * mask.width + x]!
-      sx += v * (x + 0.5)
-      sy += v * (y + 0.5)
-      s += v
-    }
-  return s ? {x: sx / s / mask.width, y: sy / s / mask.height} : {x: 0.5, y: 0.5}
+export interface Rect {
+  x: number
+  y: number
+  width: number
+  height: number
 }
 
-/** Largest crop of the given aspect centred on the point, clamped to the image. */
-export function cropAround(
-  p: Point,
-  width: number,
-  height: number,
-  aspect: number,
-  zoom: number
-) {
-  const a = aspect || width / height
+/**
+ * Container aspect ratios the image is shown in. Each is filled with
+ * `object-fit: cover`, so only one axis of the image gets cropped.
+ */
+export const containers = {
+  banner: 3,
+  wide: 16 / 9,
+  square: 1,
+  portrait: 4 / 5,
+  story: 9 / 16
+} as const
+
+export type ContainerName = keyof typeof containers
+
+/**
+ * How a frontend turns a stored focus point into a crop. We only store the
+ * point, so it should work well under both common conventions:
+ * - `css`: `object-fit: cover; object-position: x% y%`. The point is aligned
+ *   proportionally (x = 0.1 puts the window at 10% of the slack), so points
+ *   near an edge push the window against that edge.
+ * - `center`: the window is centred on the point and clamped to the image,
+ *   as image CDNs and most crop tools do.
+ */
+export const modes = ['css', 'center'] as const
+export type Mode = (typeof modes)[number]
+
+/** The visible part of an image filling a container of `aspect`. */
+export function cover(p: Point, width: number, height: number, aspect: number, mode: Mode): Rect {
   let w = width
-  let h = width / a
+  let h = width / aspect
   if (h > height) {
     h = height
-    w = height * a
+    w = height * aspect
   }
-  w /= zoom
-  h /= zoom
+  if (mode === 'css') return {x: p.x * (width - w), y: p.y * (height - h), width: w, height: h}
   const x = Math.min(width - w, Math.max(0, p.x * width - w / 2))
   const y = Math.min(height - h, Math.max(0, p.y * height - h / 2))
   return {x, y, width: w, height: h}
 }
 
-/** Fraction of the mask that ends up inside the crop. */
-export function retained(
-  mask: Mask,
-  crop: {x: number; y: number; width: number; height: number}
-): number {
-  let total = 0, inside = 0
-  const x0 = Math.round(crop.x), x1 = Math.round(crop.x + crop.width)
-  const y0 = Math.round(crop.y), y1 = Math.round(crop.y + crop.height)
+/** Share of the mask's total importance inside the rectangle. */
+export function retained(mask: Mask, r: Rect): number {
+  let total = 0
+  let inside = 0
+  const x0 = Math.round(r.x), x1 = Math.round(r.x + r.width)
+  const y0 = Math.round(r.y), y1 = Math.round(r.y + r.height)
   for (let y = 0; y < mask.height; y++)
     for (let x = 0; x < mask.width; x++) {
       const v = mask.data[y * mask.width + x]!
@@ -75,40 +75,113 @@ export function retained(
   return total ? inside / total : 1
 }
 
-export interface Score {
-  /** Point lies on the subject. */
-  hit: number
-  /** Distance to the subject centroid in normalised image coordinates. */
-  dist: number
-  crops: Record<CropName, number>
+/** Location of the most important spot: the peak of a lightly blurred mask. */
+export function peak(mask: Mask): Point {
+  const {width, height, data} = mask
+  const r = Math.max(1, Math.round(Math.max(width, height) / 40))
+  let best = -1
+  let at = {x: 0.5, y: 0.5}
+  for (let y = 0; y < height; y += 2)
+    for (let x = 0; x < width; x += 2) {
+      let s = 0
+      for (let dy = -r; dy <= r; dy++)
+        for (let dx = -r; dx <= r; dx++) {
+          const yy = Math.min(height - 1, Math.max(0, y + dy))
+          const xx = Math.min(width - 1, Math.max(0, x + dx))
+          s += data[yy * width + xx]!
+        }
+      if (s > best) {
+        best = s
+        at = {x: (x + 0.5) / width, y: (y + 0.5) / height}
+      }
+    }
+  return at
 }
 
-export function score(mask: Mask, p: Point, cropFor?: (name: CropName) => Point): Score {
-  const c = centroid(mask)
+export interface Score {
+  /** Point lies on the subject (mask >= 0.5). */
+  hit: number
+  /** Share of importance that stays visible, per container (both modes). */
+  kept: Record<ContainerName, number>
+  /** Share of crops in which the most important spot stays visible. */
+  peak: number
+}
+
+export function score(mask: Mask, p: Point, top: Point = peak(mask)): Score {
   const px = Math.min(mask.width - 1, Math.floor(p.x * mask.width))
   const py = Math.min(mask.height - 1, Math.floor(p.y * mask.height))
-  const out = {} as Record<CropName, number>
-  for (const name of Object.keys(crops) as Array<CropName>) {
-    const {aspect, zoom} = crops[name]
-    const at = cropFor ? cropFor(name) : p
-    out[name] = retained(mask, cropAround(at, mask.width, mask.height, aspect, zoom))
+  const kept = {} as Record<ContainerName, number>
+  let peaks = 0
+  const names = Object.keys(containers) as Array<ContainerName>
+  const tx = top.x * mask.width
+  const ty = top.y * mask.height
+  for (const name of names) {
+    kept[name] = 0
+    for (const mode of modes) {
+      const r = cover(p, mask.width, mask.height, containers[name], mode)
+      kept[name] += retained(mask, r) / modes.length
+      if (tx >= r.x && tx <= r.x + r.width && ty >= r.y && ty <= r.y + r.height) peaks++
+    }
   }
   return {
-    hit: mask.data[py * mask.width + px]! > 0.5 ? 1 : 0,
-    dist: Math.hypot(p.x - c.x, p.y - c.y),
-    crops: out
+    hit: mask.data[py * mask.width + px]! >= 0.5 ? 1 : 0,
+    kept,
+    peak: peaks / (names.length * modes.length)
   }
 }
 
 export function mean(scores: Array<Score>) {
   const n = scores.length
-  const crop = {} as Record<CropName, number>
-  for (const name of Object.keys(crops) as Array<CropName>)
-    crop[name] = scores.reduce((s, x) => s + x.crops[name], 0) / n
+  const kept = {} as Record<ContainerName, number>
+  for (const name of Object.keys(containers) as Array<ContainerName>)
+    kept[name] = scores.reduce((s, x) => s + x.kept[name], 0) / n
+  const all = Object.values(kept)
   return {
     n,
     hit: scores.reduce((s, x) => s + x.hit, 0) / n,
-    dist: scores.reduce((s, x) => s + x.dist, 0) / n,
-    crops: crop
+    peak: scores.reduce((s, x) => s + x.peak, 0) / n,
+    kept,
+    keptAvg: all.reduce((a, b) => a + b, 0) / all.length
   }
+}
+
+/**
+ * The best possible point for this mask: searched exhaustively on a grid,
+ * maximising average retention. Since each container crops one axis only,
+ * x and y can be optimised independently.
+ */
+export function oracle(mask: Mask): Point {
+  const {width, height, data} = mask
+  const cols = new Float64Array(width + 1)
+  const rows = new Float64Array(height + 1)
+  for (let y = 0; y < height; y++)
+    for (let x = 0; x < width; x++) {
+      const v = data[y * width + x]!
+      cols[x + 1]! += v
+      rows[y + 1]! += v
+    }
+  for (let i = 1; i <= width; i++) cols[i]! += cols[i - 1]!
+  for (let i = 1; i <= height; i++) rows[i]! += rows[i - 1]!
+  const best = (prefix: Float64Array, size: number, horizontal: boolean) => {
+    let top = -1
+    let at = 0.5
+    for (let k = 0; k <= 100; k++) {
+      const t = k / 100
+      let s = 0
+      for (const aspect of Object.values(containers))
+        for (const mode of modes) {
+          const r = cover(horizontal ? {x: t, y: 0.5} : {x: 0.5, y: t}, width, height, aspect, mode)
+          const a = Math.round(horizontal ? r.x : r.y)
+          const b = Math.round(horizontal ? r.x + r.width : r.y + r.height)
+          s += prefix[Math.min(size, b)]! - prefix[Math.max(0, a)]!
+        }
+      // Prefer the point closest to the centre among equals
+      if (s > top + 1e-9 || (Math.abs(s - top) <= 1e-9 && Math.abs(t - 0.5) < Math.abs(at - 0.5))) {
+        top = s
+        at = t
+      }
+    }
+    return at
+  }
+  return {x: best(cols, width, true), y: best(rows, height, false)}
 }

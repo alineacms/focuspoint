@@ -1,10 +1,10 @@
 // Coordinate-descent search over the algorithm's parameters.
 // Tunes on even-numbered samples and reports held-out odd-numbered samples.
-// Usage: bun eval/tune.ts [--hit 0.5] <dataset-dir>...
-// The objective blends the hit rate (weight --hit) with mean crop retention.
+// Usage: bun eval/tune.ts [--peak 0.5] <dataset-dir>...
+// The objective blends peak visibility (weight --peak) with mean importance kept.
 import {parseArgs} from 'node:util'
 import {defaults, type Params} from '../src/index.ts'
-import {evaluate, format, header, loadDataset, withOptions, type Sample} from './run.ts'
+import {evaluate, format, header, loadDataset, withOptions, type Result, type Sample} from './run.ts'
 
 const grid: {[K in keyof Params]?: Array<Params[K]>} = {
   size: [48, 64, 80, 96, 128],
@@ -16,19 +16,18 @@ const grid: {[K in keyof Params]?: Array<Params[K]>} = {
   gamma: [1, 2, 3, 4],
   intensity: [0, 0.25, 0.5, 0.75, 1],
   threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
-  radius: [0, 0.1, 0.15, 0.2, 0.3, 0.4]
+  radius: [0, 0.1, 0.15, 0.2, 0.3, 0.4],
+  fit: [0, 0.25, 0.5, 0.75, 1],
+  emphasis: [1, 2, 3, 4],
+  focus: [0, 0.1, 0.2, 0.3, 0.5]
 }
 
-type Result = Awaited<ReturnType<typeof evaluate>>
 const {values, positionals: dirs} = parseArgs({
   allowPositionals: true,
-  options: {hit: {type: 'string', default: '0.5'}}
+  options: {peak: {type: 'string', default: '0.5'}}
 })
-const hitWeight = Number(values.hit)
-const objective = (r: Result) => {
-  const c = Object.values(r.crops)
-  return r.hit * hitWeight + (c.reduce((a, b) => a + b, 0) / c.length) * (1 - hitWeight)
-}
+const peakWeight = Number(values.peak)
+const objective = (r: Result) => r.peak * peakWeight + r.keptAvg * (1 - peakWeight)
 
 const all: Array<Sample> = []
 for (const dir of dirs) all.push(...(await loadDataset(dir)))

@@ -10,7 +10,7 @@ import {readdir} from 'node:fs/promises'
 import {parseArgs} from 'node:util'
 import {focusPoint, type Options} from '../src/index.ts'
 import {load} from './load.ts'
-import {centroid, crops, mean, score, type CropName, type Mask, type Point, type Score} from './metrics.ts'
+import {containers, mean, oracle, peak, score, type Mask, type Point, type Score} from './metrics.ts'
 
 // The published typings only cover the browser entry point
 const smartcrop = smartcropModule as unknown as {
@@ -22,6 +22,8 @@ export interface Sample {
   name: string
   image: {data: Uint8ClampedArray; width: number; height: number}
   mask: Mask
+  /** Most important spot of the mask, precomputed. */
+  peak: Point
 }
 
 /** Load every image/mask pair at evaluation resolution (256px). */
@@ -46,13 +48,14 @@ export async function loadDataset(dir: string, limit = Infinity): Promise<Array<
         .raw()
         .toBuffer()
       const data = new Float32Array(image.width * image.height)
-      let peak = 255
+      let max = 255
       if (fixations) {
-        peak = 1
-        for (let i = 0; i < data.length; i++) if (raw[i]! > peak) peak = raw[i]!
+        max = 1
+        for (let i = 0; i < data.length; i++) if (raw[i]! > max) max = raw[i]!
       }
-      for (let i = 0; i < data.length; i++) data[i] = raw[i]! / peak
-      return {name, image, mask: {width: image.width, height: image.height, data}}
+      for (let i = 0; i < data.length; i++) data[i] = raw[i]! / max
+      const mask = {width: image.width, height: image.height, data}
+      return {name, image, mask, peak: peak(mask)}
     })
   )
 }
@@ -66,15 +69,11 @@ function smartcropOps(image: Sample['image']) {
   }
 }
 
-async function smartcropCenter(image: Sample['image'], aspect: number, zoom: number): Promise<Point> {
-  const w = aspect ? Math.min(image.width, image.height * aspect) : image.width
-  const h = aspect ? w / aspect : image.height
-  const scale = 1 / zoom
+/** The focus point exactly as Alinea derives it today: the centre of smartcrop's best square crop. */
+async function smartcropPoint(image: Sample['image']): Promise<Point> {
   const {topCrop} = await smartcrop.crop(image, {
-    width: w,
-    height: h,
-    minScale: scale,
-    maxScale: scale,
+    width: 100,
+    height: 100,
     imageOperations: smartcropOps(image)
   })
   return {
@@ -86,21 +85,15 @@ async function smartcropCenter(image: Sample['image'], aspect: number, zoom: num
 export type Method = (s: Sample) => Promise<Score> | Score
 
 export const methods: Record<string, Method> = {
-  center: s => score(s.mask, {x: 0.5, y: 0.5}),
-  // Upper bound: the true centroid of the subject mask
-  oracle: s => score(s.mask, centroid(s.mask)),
-  smartcrop: async s => {
-    // smartcrop optimises a crop per aspect ratio, so give it every crop
-    const per = {} as Record<CropName, Point>
-    for (const name of Object.keys(crops) as Array<CropName>)
-      per[name] = await smartcropCenter(s.image, crops[name].aspect, crops[name].zoom)
-    return score(s.mask, per.square, name => per[name])
-  },
-  focuspoint: s => score(s.mask, focusPoint(s.image))
+  center: s => score(s.mask, {x: 0.5, y: 0.5}, s.peak),
+  // Upper bound: the best single point given the ground truth
+  oracle: s => score(s.mask, oracle(s.mask), s.peak),
+  smartcrop: async s => score(s.mask, await smartcropPoint(s.image), s.peak),
+  focuspoint: s => score(s.mask, focusPoint(s.image), s.peak)
 }
 
 export function withOptions(options: Options): Method {
-  return s => score(s.mask, focusPoint(s.image, options))
+  return s => score(s.mask, focusPoint(s.image, options), s.peak)
 }
 
 export async function evaluate(samples: Array<Sample>, method: Method) {
@@ -109,20 +102,17 @@ export async function evaluate(samples: Array<Sample>, method: Method) {
   return mean(scores)
 }
 
-export function format(name: string, r: Awaited<ReturnType<typeof evaluate>>) {
-  const pct = (v: number) => (v * 100).toFixed(1).padStart(5) + '%'
-  const c = Object.values(r.crops)
-  const avg = c.reduce((a, b) => a + b, 0) / c.length
-  return [
-    name.padEnd(14),
-    pct(r.hit),
-    r.dist.toFixed(3).padStart(6),
-    ...c.map(pct),
-    pct(avg)
-  ].join('  ')
+export type Result = Awaited<ReturnType<typeof evaluate>>
+
+export function format(name: string, r: Result) {
+  const pct = (v: number) => (v * 100).toFixed(1).padStart(6) + '%'
+  return [name.padEnd(12), pct(r.hit), pct(r.peak), ...Object.values(r.kept).map(pct), pct(r.keptAvg)].join(' ')
 }
 
-export const header = ['method'.padEnd(14), '   hit', '  dist', ...Object.keys(crops).map(k => k.padStart(6)), '   avg'].join('  ')
+export const header = [
+  'method'.padEnd(12),
+  ...['hit', 'peak', ...Object.keys(containers), 'kept'].map(k => k.padStart(7))
+].join(' ')
 
 if (import.meta.main) {
   const {values, positionals} = parseArgs({

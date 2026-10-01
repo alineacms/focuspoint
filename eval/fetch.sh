@@ -48,17 +48,15 @@ for name in "${names[@]}"; do
       collect data/MSRA10K/masks .cache/sod/dataset/MSRA10K_Imgs_GT/Imgs '*.png'
       ;;
     SALICON)
-      # Mouse-tracking density maps for 1000 random COCO val2014 images
+      # Mouse-tracking attention maps for the 5000 SALICON val images (COCO val2014)
       sparse https://github.com/dogsteven/salicon-maps-val salicon '/*'
       mkdir -p data/SALICON/images data/SALICON/fixations
-      maps=$(find .cache/salicon -name '*.png' | sort)
-      echo "$maps" | python3 -c "import random,sys; l=sys.stdin.read().split(); random.seed(0); print('\n'.join(random.sample(l, 1000)))" |
-        while read -r f; do
-          base=$(basename "$f" .png)
-          cp "$f" data/SALICON/fixations/
-          [ -f "data/SALICON/images/$base.jpg" ] ||
-            curl -sSf -o "data/SALICON/images/$base.jpg" "https://s3.amazonaws.com/images.cocodataset.org/val2014/$base.jpg"
-        done
+      find .cache/salicon -name '*.png' -exec cp {} data/SALICON/fixations/ \;
+      for f in data/SALICON/fixations/*.png; do
+        base=$(basename "$f" .png)
+        [ -f "data/SALICON/images/$base.jpg" ] || echo "$base"
+      done | xargs -P 8 -I{} curl -sSf --retry 3 -o "data/SALICON/images/{}.jpg" \
+        "https://s3.amazonaws.com/images.cocodataset.org/val2014/{}.jpg"
       ;;
     *) echo "unknown dataset $name" >&2; exit 1 ;;
   esac
