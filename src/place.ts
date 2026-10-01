@@ -6,11 +6,9 @@ const aspects = [3, 16 / 9, 1, 4 / 5, 9 / 16]
 
 /**
  * Choose the point that keeps the most importance in view across typical
- * crops. Frontends apply a point in one of two ways, and both are covered:
- * CSS `object-position` aligns the point proportionally (a point at 10%
- * pushes the window to the edge), while crop tools centre the window on
- * the point and clamp it. Because each crop cuts one axis only, x and y are
- * searched independently on the row and column profiles of the map.
+ * crops, where each crop window is centred on the point and clamped to the
+ * image. Because each crop cuts one axis only, x and y are searched
+ * independently on the row and column profiles of the map.
  */
 export function place(map: Float32Array, width: number, height: number): {x: number; y: number} {
   const cols = new Float64Array(width + 1)
@@ -50,9 +48,6 @@ function search(prefix: Float64Array, size: number, widths: Array<number>): numb
     const t = k / 100
     let s = 0
     for (const w of widths) {
-      // CSS object-position: proportional alignment
-      s += span(prefix, size, t * (1 - w), t * (1 - w) + w)
-      // Centred on the point, clamped to the image
       const c = Math.min(1 - w, Math.max(0, t - w / 2))
       s += span(prefix, size, c, c + w)
     }

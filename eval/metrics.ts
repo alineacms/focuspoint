@@ -35,16 +35,14 @@ export const containers = {
 export type ContainerName = keyof typeof containers
 
 /**
- * How a frontend turns a stored focus point into a crop. We only store the
- * point, so it should work well under both common conventions:
- * - `css`: `object-fit: cover; object-position: x% y%`. The point is aligned
- *   proportionally (x = 0.1 puts the window at 10% of the slack), so points
- *   near an edge push the window against that edge.
+ * How a frontend turns a stored focus point into a crop:
  * - `center`: the window is centred on the point and clamped to the image,
- *   as image CDNs and most crop tools do.
+ *   as image CDNs and most crop tools do. This is what we score.
+ * - `css`: `object-fit: cover; object-position: x% y%`, which aligns the
+ *   point proportionally. Kept for comparison only.
  */
-export const modes = ['css', 'center'] as const
-export type Mode = (typeof modes)[number]
+export type Mode = 'center' | 'css'
+export const modes: ReadonlyArray<Mode> = ['center']
 
 /** The visible part of an image filling a container of `aspect`. */
 export function cover(p: Point, width: number, height: number, aspect: number, mode: Mode): Rect {
@@ -101,7 +99,7 @@ export function peak(mask: Mask): Point {
 export interface Score {
   /** Point lies on the subject (mask >= 0.5). */
   hit: number
-  /** Share of importance that stays visible, per container (both modes). */
+  /** Share of importance that stays visible, per container. */
   kept: Record<ContainerName, number>
   /** Share of crops in which the most important spot stays visible. */
   peak: number
