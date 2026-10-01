@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Focuspoint Viewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a light-table. The photo sits large on the left, controls and readout
+   in a narrow rail on the right, crop proofs run along the bottom like a contact sheet. */
+:root {
+  --bg: #eef0f3;
+  --panel: #ffffff;
+  --fg: #1b1f27;
+  --muted: #5d6573;
+  --line: #d5d9e0;
+  --mark: #ff3d7f;
+  --centre: #2f9bff;
+  --box: #ffd23f;
+  --accent: #1b1f27;
+  --display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151b; --panel: #1b1f27; --fg: #e8ebf0; --muted: #98a1b0; --line: #2d333e;
+    --accent: #e8ebf0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12151b; --panel: #1b1f27; --fg: #e8ebf0; --muted: #98a1b0; --line: #2d333e;
+  --accent: #e8ebf0; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.5 var(--body);
+  padding-block: 20px 40px;
+  padding-inline: max(16px, env(safe-area-inset-left, 0px));
+}
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 20px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; }
+h1 { font: 700 1.45rem/1.2 var(--display); letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); max-width: 62ch; }
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: start; }
+@media (max-width: 860px) { .main { grid-template-columns: minmax(0, 1fr); } }
+.stage-wrap {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+  padding: 14px; display: grid; place-items: center; min-width: 0; min-height: 280px; position: relative;
+}
+#stage { display: block; max-width: 100%; border-radius: 2px; }
+.rail { display: grid; gap: 16px; min-width: 0; }
+.drop {
+  border: 1.5px dashed var(--line); border-radius: 6px; padding: 18px 16px; text-align: center;
+  background: var(--panel); transition: border-color .15s, background .15s;
+}
+.drop.over { border-color: var(--mark); }
+.drop p { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+.button {
+  display: inline-block; cursor: pointer; font: 500 14px/1 var(--body); color: var(--bg);
+  background: var(--accent); padding: 10px 16px; border-radius: 4px;
+}
+.button:focus-within { outline: 2px solid var(--mark); outline-offset: 2px; }
+#file { position: absolute; width: 1px; height: 1px; opacity: 0; }
+fieldset { border: 1px solid var(--line); border-radius: 6px; margin: 0; padding: 10px 14px 12px; background: var(--panel); display: grid; gap: 8px; }
+legend, dt, .eyebrow { font: 500 11px/1.4 var(--body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+legend { padding: 0 4px; }
+label.toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.swatch { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--sw); flex: none; }
+.swatch.sq { border-radius: 2px; border-style: dashed; }
+.swatch.heat { border: 0; background: linear-gradient(90deg, #1e3ca0, #28aac8, #fadc3c, #f03c28); }
+input[type="checkbox"] { accent-color: var(--mark); width: 16px; height: 16px; margin: 0; }
+dl { margin: 0; display: grid; gap: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+dl > div { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 8px; padding: 7px 14px; border-top: 1px solid var(--line); align-items: baseline; }
+dl > div:first-child { border-top: 0; }
+dd { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+dd small { color: var(--muted); margin-left: 6px; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 13.5px; }
+.message { background: var(--panel); border: 1px solid var(--mark); border-radius: 6px; padding: 10px 14px; margin: 0; }
+section.proofs { display: grid; gap: 10px; min-width: 0; }
+.proofs-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; align-items: baseline; }
+.proofs-head h2 { font: 700 1.05rem/1.3 var(--display); margin: 0; }
+.proofs-head p { margin: 0; color: var(--muted); font-size: 13px; max-width: 70ch; }
+#crops { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 6px; }
+figure.crop {
+  margin: 0; display: grid; gap: 6px; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 6px; padding: 10px; flex: none; cursor: default; outline: none;
+}
+figure.crop:hover, figure.crop:focus-visible { border-color: var(--fg); }
+.crop-row { display: flex; gap: 8px; }
+.crop-canvas { display: block; border-radius: 2px; box-shadow: 0 0 0 2px var(--edge); }
+figcaption { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; }
+figcaption .mono { color: var(--muted); font-size: 12.5px; }
+footer { color: var(--muted); font-size: 13px; }
+footer code { font-family: var(--mono); font-size: 12.5px; }
+@media (prefers-reduced-motion: reduce) { .drop { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Focuspoint Viewer</h1>
+    <p>Choose a photo to see where the focus point lands and how centre-clamped crops use it. Everything runs in your browser; the image is never uploaded.</p>
+  </header>
+
+  <div class="main">
+    <div class="stage-wrap"><canvas id="stage" aria-label="Image with the detected focus point"></canvas></div>
+
+    <aside class="rail">
+      <div class="drop" id="drop">
+        <label class="button">Choose image<input id="file" type="file" accept="image/*"></label>
+        <p>or drop or paste one here</p>
+      </div>
+      <p class="message" id="message" hidden></p>
+
+      <fieldset>
+        <legend>Overlay</legend>
+        <label class="toggle"><input id="show-heat" type="checkbox"><span class="swatch heat"></span>Importance map</label>
+        <label class="toggle"><input id="show-box" type="checkbox"><span class="swatch sq" style="--sw: var(--box)"></span>Subject box</label>
+        <label class="toggle"><input id="compare" type="checkbox"><span class="swatch" style="--sw: var(--centre)"></span>Compare with centre</label>
+      </fieldset>
+
+      <dl id="readout"></dl>
+    </aside>
+  </div>
+
+  <section class="proofs">
+    <div class="proofs-head">
+      <h2>Crops from this point</h2>
+      <p>Each crop is the largest window of that shape, centred on the point and kept inside the image. Hover a crop to see its window on the photo.</p>
+    </div>
+    <div id="crops"></div>
+  </section>
+
+  <footer>Built from the current <code>@alinea/focuspoint</code> source: minimum barrier saliency, skin tone and a centre prior, placed for centre-clamped crops.</footer>
+</div>
+<script>(()=>{var s;function $D(){if(s)return s;s=new Float32Array(256);for(let E=0;E<256;E++){let U=E/255;s[E]=U<=0.04045?U/12.92:Math.pow((U+0.055)/1.055,2.4)}return s}function i(E){return E>0.008856?Math.cbrt(E):7.787*E+0.13793103448275862}function QD(E,U){let{data:K,width:D,height:V}=E;if(D<1||V<1||K.length<D*V*4)throw Error("focuspoint: invalid image data");let _=Math.min(1,U/Math.max(D,V)),Q=Math.max(1,Math.round(D*_)),O=Math.max(1,Math.round(V*_)),N=Q*O,J=Math.max(1,Math.floor(1/(_*4))),T=$D(),Z=new Float32Array(N),W=new Float32Array(N),P=new Float32Array(N),G=new Float32Array(N),X=new Float32Array(N),H=Q/D,A=O/V,u=new Int32Array(D);for(let I=0;I<D;I+=J)u[I]=Math.min(Q-1,Math.floor(I*H));let Y=!1;for(let I=0;I<V;I+=J){let R=Math.min(O-1,Math.floor(I*A))*Q;for(let j=0;j<D;j+=J){let C=(I*D+j)*4,f=R+u[j],q=K[C+3]/255;if(q<1)Y=!0;Z[f]+=T[K[C]]*q,W[f]+=T[K[C+1]]*q,P[f]+=T[K[C+2]]*q,G[f]+=q,X[f]++}}let S=new Float32Array(N),$=new Float32Array(N),F=new Float32Array(N);for(let I=0;I<N;I++){let R=X[I],j=R?G[I]/R:0;G[I]=j;let C=0.2158*(1-j),f=R?Z[I]/R+C:C,q=R?W[I]/R+C:C,M=R?P[I]/R+C:C,b=(0.4124*f+0.3576*q+0.1805*M)/0.95047,B=0.2126*f+0.7152*q+0.0722*M,z=(0.0193*f+0.1192*q+0.9505*M)/1.08883,y=i(b),l=i(B),g=i(z);S[I]=116*l-16,$[I]=500*(y-l),F[I]=200*(l-g)}return{width:Q,height:O,l:S,a:$,b:F,alpha:Y?G:void 0}}var UD=[3,1.7777777777777777,1,0.8,0.5625];function _D(E,U,K,D,V){let _=new Float64Array(U+1),Q=new Float64Array(K+1);for(let N=0;N<K;N++)for(let J=0;J<U;J++){let T=E[N*U+J];_[J+1]+=T,Q[N+1]+=T}for(let N=0;N<U;N++)_[N+1]+=_[N];for(let N=0;N<K;N++)Q[N+1]+=Q[N];let O=U/K;return{x:VD(_,U,UD.filter((N)=>N<O).map((N)=>N/O),D.x,V),y:VD(Q,K,UD.filter((N)=>N>O).map((N)=>O/N),D.y,V)}}function FD(E,U,K,D){let V=(_)=>{let Q=Math.max(0,Math.min(U,_*U)),O=Math.floor(Q),N=E[O];return O<U?N+(E[O+1]-N)*(Q-O):N};return V(D)-V(K)}function VD(E,U,K,D,V){if(!K.length||!E[U])return D;let _=new Float64Array(101),Q=0;for(let J=0;J<=100;J++){let T=J/100,Z=0;for(let W of K){let P=Math.min(1-W,Math.max(0,T-W/2));Z+=FD(E,U,P,P+W)}if(_[J]=Z,Z>Q)Q=Z}let O=D,N=1/0;for(let J=0;J<=100;J++){if(_[J]<Q*(1-V))continue;let T=Math.abs(J/100-D);if(T<N)N=T,O=J/100}return O}function a(E,U,K,D,V){let _=U*K,Q=new Float32Array(_).fill(1/0),O=Float32Array.from(E),N=Float32Array.from(E);for(let J=0;J<U;J++)Q[J]=0,Q[_-1-J]=0;for(let J=0;J<K;J++)Q[J*U]=0,Q[J*U+U-1]=0;for(let J=0;J<D;J++){let T=J%2===0,Z=T?-1:1,W=T?-U:U;for(let P=1;P<K-1;P++){let G=T?P:K-1-P;for(let X=1;X<U-1;X++){let H=G*U+(T?X:U-1-X),A=E[H],u=Q[H];for(let Y=0;Y<2;Y++){let S=H+(Y?W:Z),$=O[S]>A?O[S]:A,F=N[S]<A?N[S]:A;if($-F<u)u=$-F,Q[H]=u,O[H]=$,N[H]=F}}}}for(let J=0;J<_;J++)V[J]+=Q[J]}function TD(E,U){let{width:K,height:D,l:V,a:_,b:Q}=E,O=K*D,N=Math.max(1,Math.min(U,Math.floor(Math.min(K,D)/3))),J=new Float32Array(O),T=[],Z=[[0,0,K,N],[0,D-N,K,D],[0,0,N,D],[K-N,0,K,D]];for(let[W,P,G,X]of Z){let H=0,A=0,u=0,Y=0;for(let L=P;L<X;L++)for(let v=W;v<G;v++){let k=L*K+v;H+=V[k],A+=_[k],u+=Q[k],Y++}H/=Y,A/=Y,u/=Y;let S=0,$=0,F=0,I=0,R=0,j=0;for(let L=P;L<X;L++)for(let v=W;v<G;v++){let k=L*K+v,m=V[k]-H,d=_[k]-A,p=Q[k]-u;S+=m*m,$+=m*d,F+=m*p,I+=d*d,R+=d*p,j+=p*p}let C=25;S=S/Y+C,I=I/Y+C,j=j/Y+C,$/=Y,F/=Y,R/=Y;let f=I*j-R*R,q=F*R-$*j,M=$*R-F*I,b=S*j-F*F,B=$*F-S*R,z=S*I-$*$,y=S*f+$*q+F*M,l=new Float32Array(O),g=0;for(let L=0;L<O;L++){let v=V[L]-H,k=_[L]-A,m=Q[L]-u,d=(v*(f*v+q*k+M*m)+k*(q*v+b*k+B*m)+m*(M*v+B*k+z*m))/y,p=Math.sqrt(Math.max(0,d));if(l[L]=p,p>g)g=p}if(g>0)for(let L=0;L<O;L++)l[L]/=g;T.push(l)}for(let W=0;W<O;W++){let P=0,G=0;for(let X of T){let H=X[W];if(P+=H,H>G)G=H}J[W]=P-G}return J}function h(E){let U=1/0,K=-1/0;for(let V of E){if(V<U)U=V;if(V>K)K=V}let D=K-U;if(D<=0.000000001)E.fill(0);else for(let V=0;V<E.length;V++)E[V]=(E[V]-U)/D;return E}function WD(E,U,K,D){if(D<1)return;let V=new Float32Array(E.length);for(let _=0;_<K;_++){let Q=_*U;for(let O=0;O<U;O++){let N=0,J=0;for(let T=Math.max(0,O-D);T<=Math.min(U-1,O+D);T++)N+=E[Q+T],J++;V[Q+O]=N/J}}for(let _=0;_<U;_++)for(let Q=0;Q<K;Q++){let O=0,N=0;for(let J=Math.max(0,Q-D);J<=Math.min(K-1,Q+D);J++)O+=V[J*U+_],N++;E[Q*U+_]=O/N}}function qD(E){let{l:U,a:K,b:D}=E,V=new Float32Array(U.length);for(let _=0;_<U.length;_++){let Q=U[_];if(Q<15||Q>95)continue;let O=Math.hypot(K[_],D[_]);if(O<8||O>60)continue;let N=Math.atan2(D[_],K[_])*180/Math.PI,J=Math.max(0,1-Math.abs(N-50)/25),T=Math.min(1,(O-8)/10)*Math.min(1,(60-O)/15);V[_]=J*T}return V}var o={size:48,mbd:2,border:0,skin:0.5,center:1,blur:0,gamma:1,intensity:1,threshold:0,radius:0.4,fit:0.75,tolerance:0.01,emphasis:3,focus:0};function e(E,U={}){let K={...o,...U},D=QD(E,K.size),{width:V,height:_,alpha:Q}=D,O=V*_,N=new Float32Array(O);if(K.mbd){let J=new Float32Array(O);a(D.l,V,_,3,J),a(D.a,V,_,3,J),a(D.b,V,_,3,J),h(J);for(let T=0;T<O;T++)N[T]+=K.mbd*J[T]}if(K.border){let J=h(TD(D,Math.round(Math.max(V,_)/20)));for(let T=0;T<O;T++)N[T]+=K.border*J[T]}if(K.skin){let J=qD(D);for(let T=0;T<O;T++)N[T]+=K.skin*J[T]}if(WD(N,V,_,Math.round(K.blur*Math.max(V,_))),h(N),K.center){let J=(V-1)/2,T=(_-1)/2;for(let Z=0;Z<_;Z++)for(let W=0;W<V;W++){let P=(W-J)/V,G=(Z-T)/_,X=1-K.center*Math.sqrt((P*P+G*G)*2);N[Z*V+W]*=X}}if(Q)for(let J=0;J<O;J++)N[J]*=Q[J];return{width:V,height:_,data:h(N)}}function jD(E){let K=new Float64Array(64);for(let J of E)K[Math.min(63,Math.floor(J*64))]++;let D=E.length,V=0;for(let J=0;J<64;J++)V+=J*K[J];let _=0,Q=0,O=0,N=0.5;for(let J=0;J<64;J++){if(Q+=K[J],!Q)continue;let T=D-Q;if(!T)break;_+=J*K[J];let Z=_/Q,W=(V-_)/T,P=Q*T*(Z-W)*(Z-W);if(P>O)O=P,N=(J+1)/64}return N}function CD(E,U,K,D,V){let _=U*K,Q=new Int32Array(_).fill(-1),O=new Int32Array(_),N=[];for(let J=0;J<_;J++){let G=function(X){if(Q[X]!==-1||E[X]<D)return;Q[X]=T,O[P++]=X};if(Q[J]!==-1||E[J]<D)continue;let T=N.length,Z=0,W=0,P=0;Q[J]=T,O[P++]=J;while(P){let X=O[--P];Z+=E[X],W++;let H=X%U,A=(X-H)/U;if(H>0)G(X-1);if(H<U-1)G(X+1);if(A>0)G(X-U);if(A<K-1)G(X+U)}N.push(Z/Math.pow(W,V.intensity))}return{label:Q,scores:N}}var DD={x:0.5,y:0.5,box:{x:0,y:0,width:1,height:1},confidence:0};function ED(E,U={}){let K={...o,...U},{width:D,height:V,data:_}=e(E,K),Q=D*V,O=jD(_),{label:N,scores:J}=CD(_,D,V,O+K.threshold*(1-O),K);if(!J.length)return DD;let T=0;for(let q=1;q<J.length;q++)if(J[q]>J[T])T=q;let Z=(q)=>N[q]===T,W=0,P=0,G=0;for(let q=0;q<Q;q++){if(!Z(q))continue;let M=Math.pow(_[q],K.gamma);W+=M*(q%D+0.5),P+=M*(Math.floor(q/D)+0.5),G+=M}if(!G)return DD;let X=W/G,H=P/G,A=K.radius*Math.max(D,V),u=(q,M,b)=>{if(!A)return Z(q);if(_[q]<O)return!1;let B=M+0.5-X,z=b+0.5-H;return B*B+z*z<4*A*A};if(A)for(let q=0;q<8;q++){W=P=G=0;for(let z=0;z<V;z++)for(let y=0;y<D;y++){let l=z*D+y,g=_[l];if(g<O)continue;let L=y+0.5-X,v=z+0.5-H,k=Math.pow(g,K.gamma)*Math.exp(-(L*L+v*v)/(2*A*A));W+=k*(y+0.5),P+=k*(z+0.5),G+=k}if(!G)break;let M=W/G,b=P/G,B=Math.abs(M-X)+Math.abs(b-H);if(X=M,H=b,B<0.05)break}if(K.fit){let q=new Float32Array(Q),M=2*Math.pow(K.focus*Math.max(D,V),2);for(let B=0;B<V;B++)for(let z=0;z<D;z++){let y=B*D+z,l=z+0.5-X,g=B+0.5-H;q[y]=Math.pow(_[y],K.emphasis)*(M?Math.exp(-(l*l+g*g)/M):1)}let b=_D(q,D,V,{x:X/D,y:H/V},K.tolerance);X+=(b.x*D-X)*K.fit,H+=(b.y*V-H)*K.fit}let Y=D,S=V,$=-1,F=-1,I=0,R=0,j=0;for(let q=0;q<V;q++)for(let M=0;M<D;M++){let b=q*D+M,B=_[b];if(u(b,M,q)){if(M<Y)Y=M;if(q<S)S=q;if(M>$)$=M;if(q>F)F=q;I+=B,R++}else j+=B}if(!R)return DD;let C=I/R,f=Q>R?j/(Q-R):0;return{x:X/D,y:H/V,box:{x:Y/D,y:S/V,width:($-Y+1)/D,height:(F-S+1)/V},confidence:Math.max(0,Math.min(1,C-f))}}function BD(E){if("naturalWidth"in E)return[E.naturalWidth,E.naturalHeight];if("videoWidth"in E)return[E.videoWidth,E.videoHeight];return[E.width,E.height]}function PD(E,U={}){let[K,D]=BD(E);if(!K||!D)throw Error("focuspoint: image has no dimensions, is it loaded?");let V=(U.size??o.size)*2,_=Math.min(1,V/Math.max(K,D)),Q=Math.max(1,Math.round(K*_)),O=Math.max(1,Math.round(D*_)),J=(typeof OffscreenCanvas<"u"?new OffscreenCanvas(Q,O):Object.assign(document.createElement("canvas"),{width:Q,height:O})).getContext("2d",{willReadFrequently:!0});if(!J)throw Error("focuspoint: 2d canvas is not available");return J.drawImage(E,0,0,Q,O),ED(J.getImageData(0,0,Q,O),U)}var MD=[{name:"3:1",label:"Banner",aspect:3},{name:"16:9",label:"Wide",aspect:1.7777777777777777},{name:"1:1",label:"Square",aspect:1},{name:"4:5",label:"Portrait",aspect:0.8},{name:"9:16",label:"Story",aspect:0.5625}],n=(E)=>document.getElementById(E),r=n("stage"),XD=n("file"),x=n("drop"),AD=n("show-heat"),RD=n("show-box"),ND=n("compare"),ZD=n("crops"),zD=n("readout"),KD=n("message"),w,t;function YD(E,U,K,D){let V=U,_=U/D;if(_>K)_=K,V=K*D;let Q=Math.min(U-V,Math.max(0,E.x*U-V/2)),O=Math.min(K-_,Math.max(0,E.y*K-_/2));return{x:Q,y:O,width:V,height:_}}function JD(E){return getComputedStyle(document.documentElement).getPropertyValue(E).trim()}function kD(E){let U=[[0,30,60,160],[0.35,40,170,200],[0.6,250,220,60],[1,240,60,40]],K=0;while(K<U.length-2&&E>U[K+1][0])K++;let[D,V]=[U[K],U[K+1]],_=Math.min(1,Math.max(0,(E-D[0])/(V[0]-D[0]))),Q=(O)=>Math.round(D[O]+(V[O]-D[O])*_);return[Q(1),Q(2),Q(3),Math.round(40+190*E)]}function vD(E){let U=o.size*2,K=Math.min(1,U/Math.max(E.width,E.height)),D=Math.max(1,Math.round(E.width*K)),V=Math.max(1,Math.round(E.height*K)),_=document.createElement("canvas");_.width=D,_.height=V;let Q=_.getContext("2d",{willReadFrequently:!0});Q.drawImage(E,0,0,D,V);let O=e(Q.getImageData(0,0,D,V)),N=document.createElement("canvas");N.width=O.width,N.height=O.height;let J=N.getContext("2d"),T=J.createImageData(O.width,O.height);for(let Z=0;Z<O.data.length;Z++){let[W,P,G,X]=kD(O.data[Z]);T.data.set([W,P,G,X],Z*4)}return J.putImageData(T,0,0),N}function GD(E,U,K,D,V){E.save(),E.lineWidth=Math.max(2,D/6),E.strokeStyle="rgba(0,0,0,0.55)",E.beginPath(),E.arc(U,K,D+1.5,0,Math.PI*2),E.stroke(),E.strokeStyle=V,E.beginPath(),E.arc(U,K,D,0,Math.PI*2),E.moveTo(U-D*1.8,K),E.lineTo(U-D*0.45,K),E.moveTo(U+D*0.45,K),E.lineTo(U+D*1.8,K),E.moveTo(U,K-D*1.8),E.lineTo(U,K-D*0.45),E.moveTo(U,K+D*0.45),E.lineTo(U,K+D*1.8),E.stroke(),E.restore()}function c(){if(!w)return;let{image:E,point:U}=w,K=window.devicePixelRatio||1,D=r.parentElement.clientWidth,V=Math.max(260,window.innerHeight*0.62),_=Math.min(D/E.width,V/E.height,1.5),Q=Math.round(E.width*_),O=Math.round(E.height*_);r.style.width=`${Q}px`,r.style.height=`${O}px`,r.width=Math.round(Q*K),r.height=Math.round(O*K);let N=r.getContext("2d");if(N.setTransform(K,0,0,K,0,0),N.imageSmoothingQuality="high",N.drawImage(E,0,0,Q,O),AD.checked)N.save(),N.globalAlpha=0.7,N.imageSmoothingEnabled=!0,N.drawImage(w.heat,0,0,Q,O),N.restore();if(t!==void 0){let J=YD(U,Q,O,MD[t].aspect);N.save(),N.fillStyle="rgba(10,12,20,0.55)",N.beginPath(),N.rect(0,0,Q,O),N.rect(J.x,J.y,J.width,J.height),N.fill("evenodd"),N.strokeStyle="#fff",N.lineWidth=1.5,N.strokeRect(J.x+0.75,J.y+0.75,J.width-1.5,J.height-1.5),N.restore()}if(RD.checked){let J=U.box;N.save(),N.setLineDash([6,4]),N.lineWidth=1.5,N.strokeStyle=JD("--box"),N.strokeRect(J.x*Q,J.y*O,J.width*Q,J.height*O),N.restore()}if(ND.checked)GD(N,Q/2,O/2,9,JD("--centre"));GD(N,U.x*Q,U.y*O,11,JD("--mark"))}function fD(){if(!w)return;let{image:E,point:U}=w;ZD.replaceChildren(),MD.forEach((K,D)=>{let V=document.createElement("figure");V.className="crop",V.tabIndex=0;let _=document.createElement("div");_.className="crop-row";let Q=ND.checked?[{who:"Focus point",p:U,color:"--mark"},{who:"Centre",p:{x:0.5,y:0.5},color:"--centre"}]:[{who:"Focus point",p:U,color:"--mark"}];for(let T of Q){let Z=YD(T.p,E.width,E.height,K.aspect),W=document.createElement("canvas"),P=window.devicePixelRatio||1,G=132,X=Math.round(Math.min(132*K.aspect,300)),H=Math.round(X/K.aspect);W.style.width=`${X}px`,W.style.height=`${H}px`,W.width=Math.round(X*P),W.height=Math.round(H*P),W.setAttribute("aria-label",`${K.label} crop using the ${T.who.toLowerCase()}`),W.className="crop-canvas",W.style.setProperty("--edge",`var(${T.color})`);let A=W.getContext("2d");A.imageSmoothingQuality="high",A.drawImage(E,Z.x,Z.y,Z.width,Z.height,0,0,W.width,W.height),_.append(W)}let O=document.createElement("figcaption");O.innerHTML=`<span>${K.label}</span><span class="mono">${K.name}</span>`,V.append(_,O);let N=()=>{t=D,c()},J=()=>{t=void 0,c()};V.addEventListener("mouseenter",N),V.addEventListener("mouseleave",J),V.addEventListener("focus",N),V.addEventListener("blur",J),ZD.append(V)})}function bD(){if(!w)return;let{point:E,image:U,ms:K,name:D}=w,V=(_)=>`${(_*100).toFixed(1)}%`;zD.innerHTML=`
+    <div><dt>Image</dt><dd title="${D}">${D}</dd></div>
+    <div><dt>Size</dt><dd class="mono">${U.width} × ${U.height}</dd></div>
+    <div><dt>Focus x</dt><dd class="mono">${E.x.toFixed(3)} <small>${V(E.x)}</small></dd></div>
+    <div><dt>Focus y</dt><dd class="mono">${E.y.toFixed(3)} <small>${V(E.y)}</small></dd></div>
+    <div><dt>Confidence</dt><dd class="mono">${E.confidence.toFixed(2)}</dd></div>
+    <div><dt>Time</dt><dd class="mono">${K.toFixed(1)} ms</dd></div>`}function LD(){c(),fD(),bD()}async function SD(E,U){let K=performance.now(),D=PD(E),V=performance.now()-K;w={image:E,name:U,point:D,ms:V,heat:vD(E)},KD.hidden=!0,LD()}async function OD(E){if(!E)return;if(!E.type.startsWith("image/")){HD(`${E.name} isn't an image. Choose a JPEG, PNG, WebP or GIF file.`);return}try{let U=await createImageBitmap(E,{imageOrientation:"from-image"});await SD(U,E.name)}catch{HD(`${E.name} couldn't be decoded by this browser. Try a JPEG or PNG.`)}}function HD(E){KD.textContent=E,KD.hidden=!1}async function uD(){let K=document.createElement("canvas");K.width=1500,K.height=1000;let D=K.getContext("2d"),V=D.createLinearGradient(0,0,0,700);V.addColorStop(0,"#7fb2dd"),V.addColorStop(1,"#d9e8ef"),D.fillStyle=V,D.fillRect(0,0,1500,1000),D.fillStyle="rgba(255,255,255,0.55)";for(let[J,T,Z]of[[260,180,70],[330,160,90],[420,190,60],[820,300,50],[880,285,70]])D.beginPath(),D.ellipse(J,T,Z*1.6,Z*0.7,0,0,Math.PI*2),D.fill();let _=(J,T,Z,W)=>{D.fillStyle=Z,D.beginPath(),D.moveTo(0,1000);for(let P=0;P<=1500;P+=10)D.lineTo(P,J+Math.sin(P/210+W)*T+Math.sin(P/77+W*2)*T*0.25);D.lineTo(1500,1000),D.fill()};_(640,40,"#8aa58a",0.3),_(720,30,"#6f8f5e",1.7),_(820,22,"#5b7c47",2.9),D.strokeStyle="rgba(40,60,30,0.25)",D.lineWidth=3;for(let J=0;J<14;J++)D.beginPath(),D.moveTo(-200+J*140,1000),D.lineTo(750+(J-7)*30,840),D.stroke();let Q=1180,O=210,N=D.createRadialGradient(Q-40,O-60,20,Q,O,170);N.addColorStop(0,"#ff8a5c"),N.addColorStop(1,"#c2311f"),D.fillStyle=N,D.beginPath(),D.moveTo(Q,O+170),D.bezierCurveTo(Q-210,O+40,Q-150,O-160,Q,O-160),D.bezierCurveTo(Q+150,O-160,Q+210,O+40,Q,O+170),D.fill(),D.strokeStyle="rgba(255,230,180,0.75)",D.lineWidth=6;for(let J of[-0.55,0,0.55])D.beginPath(),D.moveTo(Q,O-160),D.quadraticCurveTo(Q+J*230,O,Q+J*40,O+160),D.stroke();return D.strokeStyle="#4a3020",D.lineWidth=2,D.beginPath(),D.moveTo(Q-30,O+160),D.lineTo(Q-18,O+215),D.moveTo(Q+30,O+160),D.lineTo(Q+18,O+215),D.stroke(),D.fillStyle="#7a4a2a",D.fillRect(Q-22,O+212,44,32),createImageBitmap(K)}XD.addEventListener("change",()=>OD(XD.files?.[0]));for(let E of[AD,RD,ND])E.addEventListener("change",LD);x.addEventListener("dragover",(E)=>{E.preventDefault(),x.classList.add("over")});x.addEventListener("dragleave",()=>x.classList.remove("over"));x.addEventListener("drop",(E)=>{E.preventDefault(),x.classList.remove("over"),OD(E.dataTransfer?.files[0])});window.addEventListener("paste",(E)=>{let U=[...E.clipboardData?.files??[]].find((K)=>K.type.startsWith("image/"));if(U)OD(U)});var ID=0;window.addEventListener("resize",()=>{cancelAnimationFrame(ID),ID=requestAnimationFrame(c)});matchMedia("(prefers-color-scheme: dark)").addEventListener("change",c);new MutationObserver(c).observe(document.documentElement,{attributes:!0,attributeFilter:["data-theme"]});uD().then((E)=>SD(E,"Example: generated balloon scene"));})();
+</script>
+</body>
+</html>

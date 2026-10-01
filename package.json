@@ -19,14 +19,17 @@
       "default": "./dist/browser.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "check": "tsc -p .",
     "test": "bun test",
     "size": "bun scripts/size.ts",
     "eval": "bun eval/run.ts",
-    "prepublishOnly": "bun run check && bun test && bun run build"
+    "prepublishOnly": "bun run check && bun test && bun run build",
+    "demo": "bun scripts/demo.ts"
   },
   "devDependencies": {
     "@types/bun": "^1.4.2",

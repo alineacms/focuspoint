@@ -157,6 +157,12 @@ MSRA10K photos. The rest is mostly semantic: it can't tell that a small person
 matters more than a big colourful sign. Closing that gap needs a learned
 model. The evaluation harness here is ready to compare one.
 
+## Viewer
+
+Open [`demo/focuspoint-viewer.html`](demo/focuspoint-viewer.html) in a browser to try it on your own
+images. It shows the focus point, the importance map and the crops the point
+produces. Everything runs locally.
+
 ## Development
 
 ```sh
@@ -168,6 +174,7 @@ bun run size      # bundle size
 bun eval/run.ts <dataset-dir>    # benchmark against ground truth
 bun eval/tune.ts <dataset-dir>   # parameter search (train/test split)
 bun eval/debug.ts <out-dir> <images...>  # render map + point overlays
+bun run demo      # rebuild demo/focuspoint-viewer.html
 ```
 
 A dataset directory holds `images/*.jpg` and `masks/*.png` with matching names.

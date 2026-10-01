@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Focuspoint Viewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a light-table. The photo sits large on the left, controls and readout
+   in a narrow rail on the right, crop proofs run along the bottom like a contact sheet. */
+:root {
+  --bg: #eef0f3;
+  --panel: #ffffff;
+  --fg: #1b1f27;
+  --muted: #5d6573;
+  --line: #d5d9e0;
+  --mark: #ff3d7f;
+  --centre: #2f9bff;
+  --box: #ffd23f;
+  --accent: #1b1f27;
+  --display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151b; --panel: #1b1f27; --fg: #e8ebf0; --muted: #98a1b0; --line: #2d333e;
+    --accent: #e8ebf0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12151b; --panel: #1b1f27; --fg: #e8ebf0; --muted: #98a1b0; --line: #2d333e;
+  --accent: #e8ebf0; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font: 15px/1.5 var(--body);
+  padding-block: 20px 40px;
+  padding-inline: max(16px, env(safe-area-inset-left, 0px));
+}
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 20px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; }
+h1 { font: 700 1.45rem/1.2 var(--display); letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); max-width: 62ch; }
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: start; }
+@media (max-width: 860px) { .main { grid-template-columns: minmax(0, 1fr); } }
+.stage-wrap {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+  padding: 14px; display: grid; place-items: center; min-width: 0; min-height: 280px; position: relative;
+}
+#stage { display: block; max-width: 100%; border-radius: 2px; }
+.rail { display: grid; gap: 16px; min-width: 0; }
+.drop {
+  border: 1.5px dashed var(--line); border-radius: 6px; padding: 18px 16px; text-align: center;
+  background: var(--panel); transition: border-color .15s, background .15s;
+}
+.drop.over { border-color: var(--mark); }
+.drop p { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+.button {
+  display: inline-block; cursor: pointer; font: 500 14px/1 var(--body); color: var(--bg);
+  background: var(--accent); padding: 10px 16px; border-radius: 4px;
+}
+.button:focus-within { outline: 2px solid var(--mark); outline-offset: 2px; }
+#file { position: absolute; width: 1px; height: 1px; opacity: 0; }
+fieldset { border: 1px solid var(--line); border-radius: 6px; margin: 0; padding: 10px 14px 12px; background: var(--panel); display: grid; gap: 8px; }
+legend, dt, .eyebrow { font: 500 11px/1.4 var(--body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+legend { padding: 0 4px; }
+label.toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.swatch { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--sw); flex: none; }
+.swatch.sq { border-radius: 2px; border-style: dashed; }
+.swatch.heat { border: 0; background: linear-gradient(90deg, #1e3ca0, #28aac8, #fadc3c, #f03c28); }
+input[type="checkbox"] { accent-color: var(--mark); width: 16px; height: 16px; margin: 0; }
+dl { margin: 0; display: grid; gap: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+dl > div { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 8px; padding: 7px 14px; border-top: 1px solid var(--line); align-items: baseline; }
+dl > div:first-child { border-top: 0; }
+dd { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+dd small { color: var(--muted); margin-left: 6px; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 13.5px; }
+.message { background: var(--panel); border: 1px solid var(--mark); border-radius: 6px; padding: 10px 14px; margin: 0; }
+section.proofs { display: grid; gap: 10px; min-width: 0; }
+.proofs-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; align-items: baseline; }
+.proofs-head h2 { font: 700 1.05rem/1.3 var(--display); margin: 0; }
+.proofs-head p { margin: 0; color: var(--muted); font-size: 13px; max-width: 70ch; }
+#crops { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 6px; }
+figure.crop {
+  margin: 0; display: grid; gap: 6px; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 6px; padding: 10px; flex: none; cursor: default; outline: none;
+}
+figure.crop:hover, figure.crop:focus-visible { border-color: var(--fg); }
+.crop-row { display: flex; gap: 8px; }
+.crop-canvas { display: block; border-radius: 2px; box-shadow: 0 0 0 2px var(--edge); }
+figcaption { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; }
+figcaption .mono { color: var(--muted); font-size: 12.5px; }
+footer { color: var(--muted); font-size: 13px; }
+footer code { font-family: var(--mono); font-size: 12.5px; }
+@media (prefers-reduced-motion: reduce) { .drop { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Focuspoint Viewer</h1>
+    <p>Choose a photo to see where the focus point lands and how centre-clamped crops use it. Everything runs in your browser; the image is never uploaded.</p>
+  </header>
+
+  <div class="main">
+    <div class="stage-wrap"><canvas id="stage" aria-label="Image with the detected focus point"></canvas></div>
+
+    <aside class="rail">
+      <div class="drop" id="drop">
+        <label class="button">Choose image<input id="file" type="file" accept="image/*"></label>
+        <p>or drop or paste one here</p>
+      </div>
+      <p class="message" id="message" hidden></p>
+
+      <fieldset>
+        <legend>Overlay</legend>
+        <label class="toggle"><input id="show-heat" type="checkbox"><span class="swatch heat"></span>Importance map</label>
+        <label class="toggle"><input id="show-box" type="checkbox"><span class="swatch sq" style="--sw: var(--box)"></span>Subject box</label>
+        <label class="toggle"><input id="compare" type="checkbox"><span class="swatch" style="--sw: var(--centre)"></span>Compare with centre</label>
+      </fieldset>
+
+      <dl id="readout"></dl>
+    </aside>
+  </div>
+
+  <section class="proofs">
+    <div class="proofs-head">
+      <h2>Crops from this point</h2>
+      <p>Each crop is the largest window of that shape, centred on the point and kept inside the image. Hover a crop to see its window on the photo.</p>
+    </div>
+    <div id="crops"></div>
+  </section>
+
+  <footer>Built from the current <code>@alinea/focuspoint</code> source: minimum barrier saliency, skin tone and a centre prior, placed for centre-clamped crops.</footer>
+</div>
+<script>/*SCRIPT*/</script>
+</body>
+</html>
