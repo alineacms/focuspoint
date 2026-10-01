@@ -8,7 +8,7 @@ import {readdir} from 'node:fs/promises'
 import {parseArgs} from 'node:util'
 import {focusPoint, type Options} from '../src/index.ts'
 import {load} from './load.ts'
-import {crops, mean, score, type CropName, type Mask, type Point, type Score} from './metrics.ts'
+import {centroid, crops, mean, score, type CropName, type Mask, type Point, type Score} from './metrics.ts'
 
 // The published typings only cover the browser entry point
 const smartcrop = smartcropModule as unknown as {
@@ -77,6 +77,8 @@ export type Method = (s: Sample) => Promise<Score> | Score
 
 export const methods: Record<string, Method> = {
   center: s => score(s.mask, {x: 0.5, y: 0.5}),
+  // Upper bound: the true centroid of the subject mask
+  oracle: s => score(s.mask, centroid(s.mask)),
   smartcrop: async s => {
     // smartcrop optimises a crop per aspect ratio, so give it every crop
     const per = {} as Record<CropName, Point>
