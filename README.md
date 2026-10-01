@@ -4,7 +4,7 @@ Find the focus point of an image: the (x, y) position of the main subject, so
 that any crop centred on it keeps the subject in view.
 
 - **Small**: ~3 kB gzipped, no dependencies.
-- **Fast**: a few milliseconds per image, it works on an 80 px thumbnail.
+- **Fast**: about 2 ms per image. It works on a 64 px thumbnail.
 - **Runs anywhere**: browser, Node, Bun, Deno, workers. It only needs RGBA pixels.
 
 ```ts
@@ -62,21 +62,23 @@ custom cropping logic.
 
 ## How it works
 
-1. **Downscale** the image to 160 px, averaging in linear light, then convert
-   it to CIE Lab. Most signals work on a further halved 80 px version.
-2. **Score each pixel's importance** by combining:
+1. **Downscale** the image to 64 px, averaging in linear light, and convert it
+   to CIE Lab.
+2. **Score how important each pixel is** by combining:
    - **Minimum barrier distance** ([FastMBD, Zhang et al. 2015](https://openaccess.thecvf.com/content_iccv_2015/papers/Zhang_Minimum_Barrier_Salient_ICCV_2015_paper.pdf)):
      how strongly a pixel is cut off from the image border. Backgrounds such as
-     sky, walls and floors connect to the border, subjects don't.
+     sky, walls and floors connect to the border. Subjects don't.
    - **Border colour contrast** (from MB+ in the same paper): the Mahalanobis
      distance to the colour distribution of each border strip. The strongest
-     border is left out, so a subject touching one edge still counts.
-   - **Detail**: Laplacian energy, which favours in-focus areas over blurred
-     backgrounds.
-   - A mild **centre prior**, and the **alpha channel** for transparent images.
-3. **Pick the subject**: threshold the map with Otsu's method, take the
-   strongest connected region, and return its importance-weighted centroid and
-   bounding box.
+     border is left out, so a subject that touches one edge still counts.
+   - **Skin tone**, a soft Lab hue/chroma band, at a low weight.
+   - A **centre prior**, and the **alpha channel** for transparent images.
+3. **Pick the subject**:
+   - Threshold the map strictly (Otsu, raised towards the peak) and keep the
+     strongest connected region. This decides *which* subject.
+   - Move the point with a mean shift over the looser region around it, which
+     finds the *centre* of that subject. A crop centred there keeps most of it.
+   - The bounding box covers that area.
 
 This differs from [smartcrop.js](https://github.com/jwagner/smartcrop.js),
 which scores candidate crop windows for one aspect ratio. Its crop centre is
@@ -85,7 +87,43 @@ to busy texture.
 
 ## Evaluation
 
-RESULTS
+Five public datasets were used. The parameters were tuned on ECSSD and
+PASCAL-S only, so DUTS-TE, MSRA10K and SALICON are held out. See
+[eval/README.md](eval/README.md) for the datasets and metrics.
+
+**Subject kept** is the average share of the subject that remains visible
+when the image is cropped around the point to 1:1, 9:16, 3:1 and a 2× zoom.
+**On subject** is how often the point lands on the subject. **Oracle** uses
+the true centre of the subject: it is the best a single point can do.
+
+| Subject kept | ECSSD | PASCAL-S | DUTS-TE | MSRA10K* | SALICON |
+|---|---|---|---|---|---|
+| oracle | 82.7% | 77.8% | 87.4% | 85.6% | 77.0% |
+| **focuspoint** | **78.6%** | **73.0%** | **79.9%** | **82.5%** | 72.7% |
+| centre | 76.3% | 71.3% | 77.8% | 75.5% | **72.9%** |
+| smartcrop | 66.6% | 63.9% | 69.8% | 73.0% | 66.9% |
+
+| On subject | ECSSD | PASCAL-S | DUTS-TE | MSRA10K* |
+|---|---|---|---|---|
+| oracle | 93.6% | 87.2% | 86.4% | 97.8% |
+| **focuspoint** | **87.5%** | **80.1%** | **66.3%** | **94.7%** |
+| centre | 77.8% | 71.3% | 56.2% | 74.2% |
+| smartcrop | 75.2% | 68.2% | 52.2% | 79.2% |
+
+\* MSRA10K: an evenly spaced sample of 2000 images.
+
+smartcrop is given each target aspect ratio, which our single point is not,
+and it still keeps less of the subject than a fixed centre point on every
+dataset. Speed: 2–3 ms per
+image for focuspoint against about 15 ms for smartcrop, both on 256 px input
+in Bun.
+
+**Where it falls short.** It closes 20–70% of the gap between centre-cropping
+and the oracle. The rest is mostly semantic: it can't tell that a small person
+matters more than a big colourful sign. On SALICON, where cluttered everyday
+scenes often have no single subject, it is no better than the centre.
+Closing that gap needs a learned model. That is a possible follow-up: the
+evaluation harness here is ready to compare one.
 
 ## Development
 

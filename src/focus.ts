@@ -1,5 +1,5 @@
-import {half, toLab, type ImageDataLike} from './image.ts'
-import {borderContrast, boxBlur, compactness, globalContrast, mbd, normalize, sharpness, skin} from './saliency.ts'
+import {toLab, type ImageDataLike} from './image.ts'
+import {borderContrast, boxBlur, mbd, normalize, skin} from './saliency.ts'
 
 export interface Box {
   x: number
@@ -26,7 +26,7 @@ export interface SaliencyMap {
   data: Float32Array
 }
 
-/** Tuning knobs; the defaults are fitted on the evaluation set. */
+/** Tuning knobs. The defaults were fitted with eval/tune.ts. */
 export interface Params {
   /** Longest side of the working image in pixels. */
   size: number
@@ -34,24 +34,14 @@ export interface Params {
   mbd: number
   /** Weight of the border colour contrast map. */
   border: number
-  /** Weight of the global colour contrast map. */
-  contrast: number
-  /** Weight of the colour compactness map. */
-  compact: number
   /** Weight of the skin tone map. */
   skin: number
-  /** Weight of the detail (in-focus) map. */
-  sharpness: number
   /** Strength of the centre prior, 0 disables it. */
   center: number
   /** Blur radius applied to the combined map, relative to `size`. */
   blur: number
   /** Raise the map to this power before taking the centroid. */
   gamma: number
-  /** Penalty for regions that run along the image edges, 0..1. */
-  edge: number
-  /** Penalty for regions spanning (nearly) the full width or height, 0..1. */
-  span: number
   /**
    * How regions are ranked: 0 ranks by total importance (favours large
    * regions), 1 by average importance (favours small, intense regions).
@@ -64,38 +54,27 @@ export interface Params {
    * selected region to the centre of the subject around it. 0 disables it.
    */
   radius: number
-  /**
-   * Regions scoring at least this fraction of the strongest region also pull
-   * the point towards them. 1 uses only the strongest region.
-   */
-  merge: number
 }
 
 export const defaults: Params = {
-  size: 80,
-  mbd: 1,
+  size: 64,
+  mbd: 1.5,
   border: 1,
-  contrast: 0,
-  compact: 0,
-  skin: 0,
-  sharpness: 0,
-  center: 0.5,
-  blur: 0.02,
+  skin: 0.5,
+  center: 1,
+  blur: 0.08,
   gamma: 2,
-  edge: 0,
-  span: 0,
-  intensity: 0,
-  threshold: 0,
-  radius: 0,
-  merge: 1
+  intensity: 0.25,
+  threshold: 0.6,
+  radius: 0.15
 }
 
 export interface Options extends Partial<Params> {}
 
+/** Compute the importance map that the focus point is derived from. */
 export function saliency(image: ImageDataLike, options: Options = {}): SaliencyMap {
   const p = {...defaults, ...options}
-  const hi = toLab(image, p.size * 2)
-  const lab = half(hi)
+  const lab = toLab(image, p.size)
   const {width, height, alpha} = lab
   const n = width * height
   const map = new Float32Array(n)
@@ -111,23 +90,9 @@ export function saliency(image: ImageDataLike, options: Options = {}): SaliencyM
     const b = normalize(borderContrast(lab, Math.round(Math.max(width, height) / 20)))
     for (let i = 0; i < n; i++) map[i]! += p.border * b[i]!
   }
-  if (p.contrast) {
-    const c = normalize(globalContrast(lab))
-    for (let i = 0; i < n; i++) map[i]! += p.contrast * c[i]!
-  }
-  if (p.compact) {
-    const c = normalize(compactness(lab))
-    for (let i = 0; i < n; i++) map[i]! += p.compact * c[i]!
-  }
   if (p.skin) {
     const k = skin(lab)
     for (let i = 0; i < n; i++) map[i]! += p.skin * k[i]!
-  }
-  if (p.sharpness) {
-    const s = sharpness(hi, width, height)
-    boxBlur(s, width, height, Math.max(1, Math.round(0.03 * Math.max(width, height))))
-    normalize(s)
-    for (let i = 0; i < n; i++) map[i]! += p.sharpness * s[i]!
   }
   boxBlur(map, width, height, Math.round(p.blur * Math.max(width, height)))
   normalize(map)
@@ -194,9 +159,6 @@ function regions(data: Float32Array, width: number, height: number, t: number, p
     const id = scores.length
     let mass = 0
     let area = 0
-    // Fraction of the image outline the region covers (0..4)
-    let edge = 0
-    let left = width, right = 0, upper = height, lower = 0
     let top = 0
     label[s] = id
     stack[top++] = s
@@ -206,24 +168,12 @@ function regions(data: Float32Array, width: number, height: number, t: number, p
       area++
       const x = i % width
       const y = (i - x) / width
-      if (x < left) left = x
-      if (x > right) right = x
-      if (y < upper) upper = y
-      if (y > lower) lower = y
-      if (x === 0 || x === width - 1) edge += 1 / height
-      if (y === 0 || y === height - 1) edge += 1 / width
       if (x > 0) visit(i - 1)
       if (x < width - 1) visit(i + 1)
       if (y > 0) visit(i - width)
       if (y < height - 1) visit(i + width)
     }
-    const extent = Math.max((right - left + 1) / width, (lower - upper + 1) / height)
-    const spanning = Math.max(0, (extent - 0.6) / 0.4)
-    scores.push(
-      (mass / Math.pow(area, p.intensity)) *
-        Math.max(0, 1 - p.edge * edge) *
-        (1 - p.span * spanning)
-    )
+    scores.push(mass / Math.pow(area, p.intensity))
     function visit(j: number) {
       if (label[j] !== -1 || data[j]! < t) return
       label[j] = id
@@ -247,10 +197,7 @@ export function focusPoint(image: ImageDataLike, options: Options = {}): FocusPo
   if (!scores.length) return centre
   let main = 0
   for (let i = 1; i < scores.length; i++) if (scores[i]! > scores[main]!) main = i
-  const pick = (i: number) => {
-    const id = label[i]!
-    return id === main || (id >= 0 && scores[id]! >= p.merge * scores[main]!)
-  }
+  const pick = (i: number) => label[i] === main
 
   // Its weighted centroid seeds the point
   let sx = 0, sy = 0, sw = 0

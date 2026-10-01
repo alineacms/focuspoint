@@ -95,34 +95,3 @@ export function toLab(image: ImageDataLike, size: number): LabImage {
   }
   return {width, height, l: L, a: A, b: B, alpha: translucent ? a : undefined}
 }
-
-/** Halve an image's resolution by averaging 2x2 blocks. */
-export function half(img: LabImage): LabImage {
-  const width = Math.max(1, img.width >> 1)
-  const height = Math.max(1, img.height >> 1)
-  const shrink = (src: Float32Array) => {
-    const out = new Float32Array(width * height)
-    for (let y = 0; y < height; y++)
-      for (let x = 0; x < width; x++) {
-        const x0 = Math.min(img.width - 1, x * 2)
-        const y0 = Math.min(img.height - 1, y * 2)
-        const x1 = Math.min(img.width - 1, x0 + 1)
-        const y1 = Math.min(img.height - 1, y0 + 1)
-        out[y * width + x] =
-          (src[y0 * img.width + x0]! +
-            src[y0 * img.width + x1]! +
-            src[y1 * img.width + x0]! +
-            src[y1 * img.width + x1]!) /
-          4
-      }
-    return out
-  }
-  return {
-    width,
-    height,
-    l: shrink(img.l),
-    a: shrink(img.a),
-    b: shrink(img.b),
-    alpha: img.alpha && shrink(img.alpha)
-  }
-}

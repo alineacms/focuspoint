@@ -147,28 +147,6 @@ export function borderContrast(img: LabImage, thickness: number): Float32Array {
   return sum
 }
 
-/** Distance of every pixel's colour from the mean image colour. */
-export function globalContrast(img: LabImage): Float32Array {
-  const {l, a, b} = img
-  const n = l.length
-  let m0 = 0, m1 = 0, m2 = 0
-  for (let i = 0; i < n; i++) {
-    m0 += l[i]!
-    m1 += a[i]!
-    m2 += b[i]!
-  }
-  m0 /= n
-  m1 /= n
-  m2 /= n
-  const out = new Float32Array(n)
-  for (let i = 0; i < n; i++) {
-    const d0 = l[i]! - m0
-    const d1 = a[i]! - m1
-    const d2 = b[i]! - m2
-    out[i] = Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2)
-  }
-  return out
-}
 
 /** Scale values into 0..1 in place. */
 export function normalize(map: Float32Array): Float32Array {
@@ -216,87 +194,6 @@ export function boxBlur(
       map[y * width + x] = s / c
     }
   }
-}
-
-/**
- * Local detail energy: the absolute Laplacian of lightness measured at
- * twice the working resolution and pooled 2x2. In-focus subjects in front of
- * a blurred background light up; smooth areas stay dark.
- */
-export function sharpness(hi: LabImage, width: number, height: number): Float32Array {
-  const {l, width: w, height: h} = hi
-  const out = new Float32Array(width * height)
-  for (let y = 1; y < h - 1; y++)
-    for (let x = 1; x < w - 1; x++) {
-      const i = y * w + x
-      const lap = Math.abs(4 * l[i]! - l[i - 1]! - l[i + 1]! - l[i - w]! - l[i + w]!)
-      const o = Math.min(height - 1, y >> 1) * width + Math.min(width - 1, x >> 1)
-      out[o]! += lap
-    }
-  return out
-}
-
-/**
- * Colour compactness (the "distribution" measure of Perazzi et al. 2012).
- * Pixels are binned by colour; a bin whose pixels are spread over the whole
- * frame (sky, grass, a guardrail running edge to edge) is background, a bin
- * whose pixels sit together is likely part of an object.
- */
-export function compactness(img: LabImage): Float32Array {
-  const {width, height, l, a, b} = img
-  const n = width * height
-  const q = 6
-  const bins = q * q * q
-  const bin = new Int32Array(n)
-  const count = new Float32Array(bins)
-  const mx = new Float32Array(bins)
-  const my = new Float32Array(bins)
-  const mxx = new Float32Array(bins)
-  const myy = new Float32Array(bins)
-  const quant = (v: number, min: number, max: number) =>
-    Math.max(0, Math.min(q - 1, Math.floor(((v - min) / (max - min)) * q)))
-  for (let y = 0; y < height; y++)
-    for (let x = 0; x < width; x++) {
-      const i = y * width + x
-      const k = (quant(l[i]!, 0, 100) * q + quant(a[i]!, -60, 60)) * q + quant(b[i]!, -60, 60)
-      const u = x / width
-      const v = y / height
-      bin[i] = k
-      count[k]!++
-      mx[k]! += u
-      my[k]! += v
-      mxx[k]! += u * u
-      myy[k]! += v * v
-    }
-  // Pool each bin with its colour neighbours so nearby shades share stats
-  const spread = new Float32Array(bins)
-  for (let k = 0; k < bins; k++) {
-    if (!count[k]) continue
-    const bl = Math.floor(k / (q * q))
-    const ba = Math.floor(k / q) % q
-    const bb = k % q
-    let c = 0, sx = 0, sy = 0, sxx = 0, syy = 0
-    for (let dl = -1; dl <= 1; dl++)
-      for (let da = -1; da <= 1; da++)
-        for (let db = -1; db <= 1; db++) {
-          const nl = bl + dl, na = ba + da, nb = bb + db
-          if (nl < 0 || na < 0 || nb < 0 || nl >= q || na >= q || nb >= q) continue
-          const j = (nl * q + na) * q + nb
-          // Own bin counts double
-          const w = j === k ? 2 : 1
-          c += w * count[j]!
-          sx += w * mx[j]!
-          sy += w * my[j]!
-          sxx += w * mxx[j]!
-          syy += w * myy[j]!
-        }
-    const ex = sx / c, ey = sy / c
-    spread[k] = sxx / c - ex * ex + (syy / c - ey * ey)
-  }
-  const out = new Float32Array(n)
-  // A uniform distribution over the frame has a variance of 1/12 per axis
-  for (let i = 0; i < n; i++) out[i] = Math.max(0, 1 - spread[bin[i]!]! * 6)
-  return out
 }
 
 /**
