@@ -60,6 +60,9 @@ describe('focusPoint', () => {
     expect(p.x).toBeCloseTo(0.5, 1)
     expect(p.y).toBeCloseTo(0.5, 1)
     expect(p.confidence).toBe(0)
+    const white = focusPoint({data: new Uint8ClampedArray(64 * 48 * 4).fill(255), width: 64, height: 48})
+    expect(white.y).toBeCloseTo(0.5, 1)
+    expect(white.confidence).toBe(0)
   })
 
   test('handles tiny and huge inputs', () => {

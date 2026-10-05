@@ -1,9 +1,9 @@
 # Training the importance model
 
 A small network that predicts where the important parts of a photo are,
-shipped as `@alinea/focuspoint/model`. It replaces only the heuristic's
-importance map; subject selection and crop placement (`locate()` in
-`src/focus.ts`) are shared.
+shipped as `@alinea/focuspoint`. It replaced the hand-written heuristic's
+importance map (now a baseline in `eval/heuristic.ts`); subject selection
+and crop placement (`locate()` in `src/locate.ts`) stayed the same.
 
 ## Data
 
@@ -50,7 +50,7 @@ python train.py student-heads --init student --epochs 15 --lr 0.0015 --peak 1 --
   --sources SALICON-TR-T-F,DUTS-TR-T-F,OPENIMAGES-U-F --val SALICON-TR,DUTS-TR
 python train.py student-q4 --init student-heads --qat 4 --epochs 4 --lr 0.0004 --peak 1 --kept 0.5 --head 1 \
   --sources SALICON-TR-T-F,DUTS-TR-T-F,OPENIMAGES-U-F --val SALICON-TR,DUTS-TR
-python export.py student-q4 --bits 4        # writes src/model/weights.ts and the parity fixture
+python export.py student-q4 --bits 4        # writes src/weights.ts and the parity fixture
 ```
 
 Then, from the repo root:
@@ -60,7 +60,7 @@ bun test                                     # includes the PyTorch/TS parity te
 python train/predict.py student-q4 SALICON-TR-VAL DUTS-TR-VAL --checkpoint train/runs/student-q4/quantized.pt
 bun eval/tune.ts --maps eval/predictions/student-q4 --peak 0.4 --head 0.4 --guard 0.015 \
   eval/data/SALICON-TR-VAL eval/data/DUTS-TR-VAL   # placement defaults for the model
-bun eval/run.ts eval/data/SALICON eval/data/DUTS-TE --methods oracle,center,focuspoint,model
+bun eval/run.ts eval/data/SALICON eval/data/DUTS-TE --methods oracle,center,heuristic,model
 ```
 
 `predict.py` writes maps for `eval/run.ts --maps`, which scores any map
@@ -76,7 +76,7 @@ size.
   context vector, and a decoder with skip connections up to a 32×32 map.
   Only 3×3 convolutions (full and depthwise), 1×1 convolutions, ReLU, 2×
   bilinear upsampling and a global mean, so the TypeScript port in
-  `src/model/net.ts` is a few loops.
+  `src/net.ts` is a few loops.
 - Output: logits; a softmax over positions is the importance map.
 
 ## Loss

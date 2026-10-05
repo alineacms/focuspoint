@@ -85,6 +85,9 @@ Baselines:
 - **oracle**: the best single point for each image, found by exhaustive search
   for maximum kept against the ground truth.
 - **center**: always (0.5, 0.5).
+- **heuristic**: the hand-written importance map focuspoint used before the
+  model (minimum barrier distance, skin tone and a centre prior), through the
+  same selection and placement. It lives in `heuristic.ts`.
 - **smartcrop**: the focus point as Alinea derives it today, which is the
   centre of [smartcrop.js](https://github.com/jwagner/smartcrop.js)'s best
   100×100 crop.
@@ -95,7 +98,7 @@ but this isn't scored by default.
 ## Tools
 
 - `run.ts`: the benchmark. `--limit N` samples N images evenly, `--methods`
-  picks which methods to run (`model` is the learned model as shipped), and
+  picks which methods to run (`model` is focuspoint as shipped), and
   `--maps <dir>` scores precomputed maps (from `train/predict.py`) through
   the library's selection and placement.
 - `faces.ts`, `marks.ts`: the face and hand-marked checks above.
@@ -104,7 +107,7 @@ but this isn't scored by default.
   images and reports on odd-numbered ones. `--peak` and `--head` set how much
   peak and head weigh against kept, `--guard` rejects settings whose kept
   drops more than that below the heuristic on any set, and `--maps` tunes
-  only placement, for a model's maps.
+  for precomputed maps instead of the shipped model's.
 - `failures.ts`: renders the images that lose the most against the oracle (red is the prediction, green the oracle point).
 - `debug.ts`: renders the saliency map and focus point for any images.
 

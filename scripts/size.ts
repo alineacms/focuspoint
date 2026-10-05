@@ -2,7 +2,7 @@
 import {gzipSync} from 'node:zlib'
 import {rm, writeFile} from 'node:fs/promises'
 
-for (const entry of ['index', 'browser', 'model/index', 'model/browser']) {
+for (const entry of ['index']) {
   // Reference every export so nothing is tree-shaken away
   const probe = `scripts/.size-${entry.replace('/', '-')}.ts`
   await writeFile(probe, `import * as m from '../src/${entry}.ts'\n;(globalThis as any).m = m\n`)

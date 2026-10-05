@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>focuspoint</title>
-<meta name="description" content="Find the focus point of an image so any crop keeps what matters. A 4 kB heuristic or a tiny learned model, in plain JavaScript.">
+<meta name="description" content="Find the focus point of an image so any crop keeps what matters. A tiny learned model in plain JavaScript.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -281,8 +281,7 @@ footer p { margin: 0; max-width: 60ch; }
     <div class="group">
       <div class="label">Method</div>
       <div class="seg" role="radiogroup" aria-label="Method">
-        <label><input type="radio" name="method" id="method-model" value="model" checked><span>Model</span></label>
-        <label><input type="radio" name="method" id="method-heuristic" value="heuristic"><span>Heuristic</span></label>
+        <label><input type="radio" name="method" id="method-model" value="model" checked><span>focuspoint</span></label>
         <label><input type="radio" name="method" id="method-centre" value="centre"><span>Centre</span></label>
       </div>
     </div>
@@ -333,7 +332,7 @@ footer p { margin: 0; max-width: 60ch; }
         <h2>Crops that keep the face, the dog, the surfer.</h2>
         <p style="margin-top:12px">Every photo below is cropped live around the point focuspoint picks for it. Change the container shape and watch the crops follow. Tune the settings on the left to see how each one moves the point.</p>
       </div>
-      <pre class="code" aria-label="Usage"><span class="k">import</span> {focusPoint} <span class="k">from</span> '@alinea/focuspoint/model'
+      <pre class="code" aria-label="Usage"><span class="k">import</span> {focusPoint} <span class="k">from</span> '@alinea/focuspoint'
 
 <span class="k">const</span> {x, y} = focusPoint({data, width, height})
 <span class="c">// centre every crop on (x, y), clamped to the image</span></pre>
@@ -343,12 +342,12 @@ footer p { margin: 0; max-width: 60ch; }
 
   <footer>
     <div>
-      <h3>Two ways to find the point</h3>
-      <p>The heuristic (about 4 kB) scores how cut off each region is from the image border, plus skin tone and a centre bias. The model replaces that importance map with a tiny learned network that knows a face matters more than a sign. Both then pick the subject, keep its most important spot whole, and place the point so typical crops keep it in view.</p>
+      <h3>How it finds the point</h3>
+      <p>A tiny learned network scores how much each part of the photo matters, and knows a face matters more than a sign. focuspoint then picks the subject, keeps its most important spot whole, and places the point so typical crops keep it in view.</p>
     </div>
     <div>
       <h3>Measured on what people look at</h3>
-      <p id="results">On photos with faces, the model keeps the main head whole in 78–84% of crops, against 59–66% for the heuristic and 57–64% for a centred crop. On 55 hand-marked photos it keeps the marked point in 94% of crops. 35 kB, 4–6 ms per image.</p>
+      <p id="results">On photos with faces, the model keeps the main head whole in 78–84% of crops, against 57–64% for a centred crop. On 55 hand-marked photos it keeps the marked point in 94% of crops. 35 kB, 4–6 ms per image.</p>
     </div>
     <div>
       <h3>Photos</h3>

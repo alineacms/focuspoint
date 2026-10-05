@@ -5,20 +5,16 @@
 // The objective blends peak visibility (weight --peak) and whole-head
 // visibility (weight --head) with mean importance kept. With --guard, a
 // candidate whose kept falls more than that below the heuristic's on any
-// dataset is rejected. With --maps, only subject selection and placement are
-// tuned, for those maps.
+// dataset is rejected. With --maps, the parameters are tuned for those maps
+// instead of the shipped model's.
 import {parseArgs} from 'node:util'
-import {defaults, focusPoint, type Params} from '../src/index.ts'
+import {defaults, type Params} from '../src/index.ts'
+import * as heuristic from './heuristic.ts'
 import {score} from './metrics.ts'
 import {evaluate, format, header, loadDataset, withMaps, withOptions, type Result, type Sample} from './run.ts'
 
 const grid: {[K in keyof Params]?: Array<Params[K]>} = {
   size: [48, 64, 80, 96, 128],
-  mbd: [0, 0.5, 1, 1.5, 2],
-  border: [0, 0.5, 1, 1.5, 2],
-  skin: [0, 0.25, 0.5, 1],
-  center: [0, 0.25, 0.5, 0.75, 1],
-  blur: [0, 0.02, 0.04, 0.08],
   gamma: [1, 2, 3, 4],
   intensity: [0, 0.25, 0.5, 0.75, 1],
   threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
@@ -39,20 +35,19 @@ const {values, positionals: dirs} = parseArgs({
     maps: {type: 'string'}
   }
 })
-// Signals that only shape the heuristic's map
-const signals: Array<keyof Params> = ['mbd', 'border', 'skin', 'center', 'blur']
-if (values.maps) for (const key of signals) delete grid[key]
 const method = (p: Params) => (values.maps ? withMaps(values.maps, p) : withOptions(p))
 const peakWeight = Number(values.peak)
 const headWeight = Number(values.head)
 const objective = (r: Result) => r.peak * peakWeight + r.head * headWeight + r.keptAvg * (1 - peakWeight - headWeight)
+
+const baseline = (s: Sample) => score(s.mask, heuristic.focusPoint(s.image), s.peak, s.region)
 
 const sets: Array<{train: Array<Sample>; test: Array<Sample>; floor: number}> = []
 for (const dir of dirs) {
   const samples = await loadDataset(dir)
   const train = samples.filter((_, i) => i % 2 === 0)
   // The heuristic's kept on this set, less the allowed drop
-  const floor = values.guard ? (await evaluate(train, withOptions(defaults))).keptAvg - Number(values.guard) : 0
+  const floor = values.guard ? (await evaluate(train, baseline)).keptAvg - Number(values.guard) : 0
   sets.push({train, test: samples.filter((_, i) => i % 2 === 1), floor})
 }
 const train = sets.flatMap(s => s.train)
@@ -87,7 +82,7 @@ for (let round = 0; round < 3; round++) {
 }
 console.log('best', best)
 console.log(header)
-console.log(format('heuristic', await evaluate(test, s => score(s.mask, focusPoint(s.image), s.peak, s.region))))
+console.log(format('heuristic', await evaluate(test, baseline)))
 console.log(format('defaults', await evaluate(test, method(defaults))))
 console.log(format('tuned', await evaluate(test, method(best))))
 console.log(JSON.stringify(best))

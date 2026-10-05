@@ -1,4 +1,4 @@
-import {srgbToLinear, type ImageDataLike} from '../image.ts'
+import {srgbToLinear, type ImageDataLike} from './image.ts'
 
 export interface Thumbnail {
   size: number

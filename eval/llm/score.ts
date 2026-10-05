@@ -1,7 +1,7 @@
 // Score LLM labels against human ground truth, next to the usual baselines.
 // Usage: bun eval/llm/score.ts <dataset-dir> <labels.jsonl...>
 import {basename} from 'node:path'
-import {saliency} from '../../src/index.ts'
+import {saliency} from '../heuristic.ts'
 import {place} from '../../src/place.ts'
 import {score} from '../metrics.ts'
 import {evaluate, format, header, loadDataset, methods, type Method, type Sample} from '../run.ts'

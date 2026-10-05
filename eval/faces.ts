@@ -7,7 +7,7 @@ import {readFile} from 'node:fs/promises'
 import {basename, join} from 'node:path'
 import {parseArgs} from 'node:util'
 import {focusPoint, locate, type Options} from '../src/index.ts'
-import {focusPoint as modelPoint} from '../src/model/index.ts'
+import * as heuristic from './heuristic.ts'
 import {containers, cover, type Point} from './metrics.ts'
 import {fit, loadDataset, readMap, type Sample} from './run.ts'
 
@@ -25,8 +25,8 @@ const options = JSON.parse(values.options) as Options
 
 const methods: Record<string, (s: Sample) => Promise<Point> | Point> = {
   center: () => ({x: 0.5, y: 0.5}),
-  heuristic: s => focusPoint(s.image),
-  model: s => modelPoint(s.image, options)
+  heuristic: s => heuristic.focusPoint(s.image),
+  model: s => focusPoint(s.image, options)
 }
 let current: Record<string, Array<Head>> = {}
 // Upper bound for the main head: centring on it keeps it whenever it fits

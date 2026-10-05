@@ -121,7 +121,6 @@ footer code { font-family: var(--mono); font-size: 12.5px; }
 
       <fieldset>
         <legend>Overlay</legend>
-        <label class="toggle"><input id="use-model" type="checkbox" checked><span class="swatch" style="--sw: var(--accent, currentColor)"></span>Learned model</label>
         <label class="toggle"><input id="show-heat" type="checkbox"><span class="swatch heat"></span>Importance map</label>
         <label class="toggle"><input id="show-box" type="checkbox"><span class="swatch sq" style="--sw: var(--box)"></span>Subject box</label>
         <label class="toggle"><input id="compare" type="checkbox"><span class="swatch" style="--sw: var(--centre)"></span>Compare with centre</label>
@@ -139,7 +138,7 @@ footer code { font-family: var(--mono); font-size: 12.5px; }
     <div id="crops"></div>
   </section>
 
-  <footer>Built from the current <code>@alinea/focuspoint</code> source: minimum barrier saliency, skin tone and a centre prior, placed for centre-clamped crops.</footer>
+  <footer>Built from the current <code>@alinea/focuspoint</code> source: a tiny learned importance model, placed for centre-clamped crops.</footer>
 </div>
 <script>/*SCRIPT*/</script>
 </body>

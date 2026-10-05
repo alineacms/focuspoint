@@ -8,7 +8,8 @@ import {existsSync} from 'node:fs'
 import {readFile, writeFile} from 'node:fs/promises'
 import {basename, join} from 'node:path'
 import {parseArgs} from 'node:util'
-import {focusPoint, locate, saliency, type SaliencyMap} from '../src/index.ts'
+import {locate, type SaliencyMap} from '../src/index.ts'
+import * as heuristic from './heuristic.ts'
 import {containers, cover, mean, oracle, score, type Mask, type Point} from './metrics.ts'
 import {fit, loadDataset, readMap, type Sample} from './run.ts'
 
@@ -41,7 +42,7 @@ async function rows(dir: string): Promise<Array<Row>> {
   return Promise.all(
     samples.map(async s => {
       const map = fit(await readMap(join(maps!, s.set, `${s.name}.f32`)), s.image)
-      const points = {heuristic: focusPoint(s.image), model: locate(map, options), oracle: oracle(s.mask)}
+      const points = {heuristic: heuristic.focusPoint(s.image), model: locate(map, options), oracle: oracle(s.mask)}
       return {
         s,
         map,
@@ -216,7 +217,7 @@ async function gallery(r: Array<Row>) {
   const out: Array<string> = []
   for (const [tag, row] of picks) {
     const {s, points, kept, peak} = row
-    const h = saliency(s.image)
+    const h = heuristic.saliency(s.image)
     out.push(`<article class="row"><header><span class="tag ${tag.replace(' ', '-')}">${tag}</span><code>${s.name}</code></header><div class="panels">
     ${await panel(s.set.startsWith('SALICON') ? 'Where people looked' : 'Subject mask', s, s.mask, points.oracle, kept.oracle, peak.oracle, 'oracle', true)}
     ${await panel('Heuristic', s, h, points.heuristic, kept.heuristic, peak.heuristic, 'heuristic')}

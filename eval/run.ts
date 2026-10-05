@@ -1,5 +1,5 @@
 // Evaluate focus point methods against salient object masks.
-// Usage: bun eval/run.ts <dataset-dir> [--limit N] [--methods center,smartcrop,focuspoint,model]
+// Usage: bun eval/run.ts <dataset-dir> [--limit N] [--methods center,smartcrop,heuristic,model]
 //   [--maps eval/predictions/<model>]
 // --maps scores precomputed importance maps (<dir>/<dataset>/<image>.f32)
 // through the library's subject selection and crop placement.
@@ -12,8 +12,8 @@ import {existsSync} from 'node:fs'
 import {readFile, readdir} from 'node:fs/promises'
 import {parseArgs} from 'node:util'
 import {defaults, focusPoint, locate, type Options, type SaliencyMap} from '../src/index.ts'
-import {focusPoint as modelPoint} from '../src/model/index.ts'
-import {resize} from '../src/model/resize.ts'
+import {resize} from '../src/resize.ts'
+import * as heuristic from './heuristic.ts'
 import {load} from './load.ts'
 import {containers, mean, oracle, peak, score, topRegion, type Mask, type Point, type Rect, type Score} from './metrics.ts'
 
@@ -99,11 +99,11 @@ export const methods: Record<string, Method> = {
   // Upper bound: the best single point given the ground truth
   oracle: s => score(s.mask, oracle(s.mask), s.peak, s.region),
   smartcrop: async s => score(s.mask, await smartcropPoint(s.image), s.peak, s.region),
-  focuspoint: s => score(s.mask, focusPoint(s.image), s.peak, s.region),
-  // The learned model, exactly as @alinea/focuspoint/model ships it
-  model: s => score(s.mask, modelPoint(s.image), s.peak, s.region),
+  heuristic: s => score(s.mask, heuristic.focusPoint(s.image), s.peak, s.region),
+  // The learned model, exactly as @alinea/focuspoint ships it
+  model: s => score(s.mask, focusPoint(s.image), s.peak, s.region),
   // The model without protecting the top spot: more of the whole subject
-  'model-whole': s => score(s.mask, modelPoint(s.image, {protect: 0}), s.peak, s.region)
+  'model-whole': s => score(s.mask, focusPoint(s.image, {protect: 0}), s.peak, s.region)
 }
 
 export function withOptions(options: Options): Method {
@@ -167,7 +167,7 @@ if (import.meta.main) {
     allowPositionals: true,
     options: {
       limit: {type: 'string'},
-      methods: {type: 'string', default: 'center,smartcrop,focuspoint'},
+      methods: {type: 'string', default: 'center,smartcrop,heuristic,model'},
       maps: {type: 'string', multiple: true, default: []}
     }
   })

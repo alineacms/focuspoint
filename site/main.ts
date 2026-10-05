@@ -1,5 +1,4 @@
-import {defaults as heuristicDefaults, locate, saliency, type FocusPoint, type Params, type SaliencyMap} from '../src/index.ts'
-import {defaults as modelDefaults, saliency as modelSaliency} from '../src/model/index.ts'
+import {defaults, locate, saliency, type FocusPoint, type Params, type SaliencyMap} from '../src/index.ts'
 
 interface Photo {
   id: string
@@ -11,7 +10,7 @@ interface Photo {
   height: number
 }
 
-type Method = 'model' | 'heuristic' | 'centre'
+type Method = 'model' | 'centre'
 
 interface Item {
   photo: Photo
@@ -26,7 +25,6 @@ interface Item {
   time: HTMLElement
   data?: ImageData
   model?: {key: number; map: SaliencyMap; ms: number}
-  heuristic?: {key: string; map: SaliencyMap; ms: number}
   point?: FocusPoint
   drawn?: SaliencyMap
 }
@@ -50,7 +48,6 @@ interface Slider {
   max: number
   step: number
   help: string
-  heuristic?: boolean
 }
 
 const sliders: Array<Slider> = [
@@ -61,13 +58,8 @@ const sliders: Array<Slider> = [
   {key: 'tolerance', label: 'Tolerance', min: 0, max: 0.05, step: 0.005, help: 'Placements this close to the best count as equal. The one nearest the subject wins.'},
   {key: 'threshold', label: 'Split threshold', min: 0, max: 0.6, step: 0.05, help: 'Raise it to split touching subjects and keep only the strongest.'},
   {key: 'radius', label: 'Subject radius', min: 0, max: 0.4, step: 0.05, help: 'How far around the strongest region to look for the rest of the subject.'},
-  {key: 'intensity', label: 'Small subjects', min: 0, max: 1, step: 0.05, help: 'At 0 the biggest region wins; at 1 the most intense one does.'},
-  {key: 'mbd', label: 'Border cut-off', min: 0, max: 3, step: 0.25, help: 'Weight of regions that are cut off from the image border.', heuristic: true},
-  {key: 'skin', label: 'Skin tone', min: 0, max: 1.5, step: 0.25, help: 'Weight of skin-coloured areas.', heuristic: true},
-  {key: 'center', label: 'Centre bias', min: 0, max: 1, step: 0.05, help: 'How much the middle of the frame is preferred.', heuristic: true},
-  {key: 'border', label: 'Border contrast', min: 0, max: 2, step: 0.25, help: 'Weight of colours that differ from the border.', heuristic: true}
+  {key: 'intensity', label: 'Small subjects', min: 0, max: 1, step: 0.05, help: 'At 0 the biggest region wins; at 1 the most intense one does.'}
 ]
-const signals: Array<keyof Params> = ['size', 'mbd', 'border', 'skin', 'center', 'blur']
 
 const state = {
   method: 'model' as Method,
@@ -77,7 +69,7 @@ const state = {
   heat: false,
   box: false,
   mark: false,
-  params: {model: {...modelDefaults}, heuristic: {...heuristicDefaults}} as Record<'model' | 'heuristic', Params>
+  params: {...defaults} as Params
 }
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T
@@ -96,7 +88,7 @@ function controls() {
     .join('')
   $('sliders').innerHTML = sliders
     .map(
-      s => `<div class="slider" data-key="${s.key}"${s.heuristic ? ' data-heuristic' : ''}>
+      s => `<div class="slider" data-key="${s.key}">
   <label class="label" for="p-${s.key}">${s.label}<output id="o-${s.key}"></output></label>
   <input type="range" id="p-${s.key}" min="${s.min}" max="${s.max}" step="${s.step}">
   <small>${s.help}</small></div>`
@@ -126,7 +118,7 @@ function controls() {
     const t = e.target as HTMLInputElement
     const key = t.id.slice(2) as keyof Params
     if (state.method === 'centre') return
-    state.params[state.method][key] = Number(t.value)
+    state.params[key] = Number(t.value)
     $(`o-${key}`).textContent = t.value
     update()
   })
@@ -142,7 +134,7 @@ function controls() {
   })
   $('reset').addEventListener('click', () => {
     if (state.method === 'centre') return
-    state.params[state.method] = {...(state.method === 'model' ? modelDefaults : heuristicDefaults)}
+    state.params = {...defaults}
     syncSliders()
     update()
   })
@@ -165,10 +157,9 @@ function syncSliders() {
   const tuning = $<HTMLDetailsElement>('tuning')
   tuning.hidden = state.method === 'centre'
   if (state.method === 'centre') return
-  const p = state.params[state.method]
+  const p = state.params
   for (const el of document.querySelectorAll<HTMLElement>('.slider')) {
     const key = el.dataset.key as keyof Params
-    el.hidden = el.hasAttribute('data-heuristic') && state.method !== 'heuristic'
     $<HTMLInputElement>(`p-${key}`).value = String(p[key])
     $(`o-${key}`).textContent = String(p[key])
   }
@@ -250,23 +241,12 @@ function compute(item: Item) {
     item.point = {x: 0.5, y: 0.5, box: {x: 0, y: 0, width: 1, height: 1}, confidence: 0}
     return
   }
-  const p = state.params[method]
-  let map: SaliencyMap
-  if (method === 'model') {
-    if (item.model?.key !== p.size) {
-      const [m, ms] = timed(() => modelSaliency(item.data!, p))
-      item.model = {key: p.size, map: m, ms}
-    }
-    map = item.model.map
-  } else {
-    const key = signals.map(k => p[k]).join()
-    if (item.heuristic?.key !== key) {
-      const [m, ms] = timed(() => saliency(item.data!, p))
-      item.heuristic = {key, map: m, ms}
-    }
-    map = item.heuristic.map
+  const p = state.params
+  if (item.model?.key !== p.size) {
+    const [m, ms] = timed(() => saliency(item.data!, p))
+    item.model = {key: p.size, map: m, ms}
   }
-  item.point = locate(map, p)
+  item.point = locate(item.model.map, p)
 }
 
 function aspectOf(item: Item): number {
@@ -323,10 +303,10 @@ function render(item: Item) {
     const b = p.box
     Object.assign(box.style, {left: pct(fx(b.x)), top: pct(fy(b.y)), width: pct(fx(b.x + b.width) - fx(b.x)), height: pct(fy(b.y + b.height) - fy(b.y))})
   }
-  const map = state.method === 'model' ? item.model?.map : state.method === 'heuristic' ? item.heuristic?.map : undefined
+  const map = state.method === 'model' ? item.model?.map : undefined
   heat.hidden = !state.heat || !map
   if (map && !heat.hidden && item.drawn !== map) drawHeat(heat, map, (item.drawn = map))
-  const ms = state.method === 'model' ? item.model?.ms : state.method === 'heuristic' ? item.heuristic?.ms : undefined
+  const ms = state.method === 'model' ? item.model?.ms : undefined
   item.time.textContent = ms === undefined ? '' : `${ms.toFixed(1)} ms`
 }
 
@@ -369,18 +349,17 @@ function summary() {
   const done = items.filter(i => i.data)
   if (!done.length) return
   const method = state.method
-  const maps = done.map(i => (method === 'model' ? i.model?.ms : method === 'heuristic' ? i.heuristic?.ms : 0) ?? 0)
+  const maps = done.map(i => (method === 'model' ? i.model?.ms : 0) ?? 0)
   const [, place] = timed(() => {
-    if (method !== 'centre') for (const i of done) locate((method === 'model' ? i.model : i.heuristic)!.map, state.params[method])
+    if (method === 'model') for (const i of done) locate(i.model!.map, state.params)
   })
   const avg = maps.reduce((a, b) => a + b, 0) / done.length
-  const name = method === 'model' ? 'learned model' : method === 'heuristic' ? 'heuristic' : 'centre point'
   const marked = done.filter(i => labels[i.photo.id] && i.point)
   const score = marked.length ? marked.reduce((s, i) => s + agreement(i, i.point!), 0) / marked.length : 0
   readout.innerHTML =
     (method === 'centre'
-      ? `<b>${done.length}</b> photos, every crop centred.<br>Switch to the model to see the difference.`
-      : `<b>${done.length}</b> photos · ${name}<br>map <b>${avg.toFixed(1)} ms</b> · point <b>${(place / done.length).toFixed(2)} ms</b> per photo`) +
+      ? `<b>${done.length}</b> photos, every crop centred.<br>Switch to focuspoint to see the difference.`
+      : `<b>${done.length}</b> photos · focuspoint<br>map <b>${avg.toFixed(1)} ms</b> · point <b>${(place / done.length).toFixed(2)} ms</b> per photo`) +
     (marked.length ? `<br><b>${marked.length}</b> marked · crops keep your point <b>${(score * 100).toFixed(0)}%</b>` : '')
 }
 
