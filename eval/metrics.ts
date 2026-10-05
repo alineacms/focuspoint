@@ -73,12 +73,17 @@ export function retained(mask: Mask, r: Rect): number {
   return total ? inside / total : 1
 }
 
-/** Location of the most important spot: the peak of a lightly blurred mask. */
+/**
+ * Location of the most important spot: the peak of a lightly blurred mask.
+ * Subject masks are flat, so their whole interior ties for the peak; ties
+ * (within 1%) go to the tied position nearest the middle of the tied area,
+ * the heart of the subject, rather than to whichever is scanned first.
+ */
 export function peak(mask: Mask): Point {
   const {width, height, data} = mask
   const r = Math.max(1, Math.round(Math.max(width, height) / 40))
+  const blurred: Array<{x: number; y: number; s: number}> = []
   let best = -1
-  let at = {x: 0.5, y: 0.5}
   for (let y = 0; y < height; y += 2)
     for (let x = 0; x < width; x += 2) {
       let s = 0
@@ -88,12 +93,45 @@ export function peak(mask: Mask): Point {
           const xx = Math.min(width - 1, Math.max(0, x + dx))
           s += data[yy * width + xx]!
         }
-      if (s > best) {
-        best = s
-        at = {x: (x + 0.5) / width, y: (y + 0.5) / height}
-      }
+      blurred.push({x, y, s})
+      if (s > best) best = s
     }
-  return at
+  const tied = blurred.filter(b => b.s >= best * 0.99)
+  const cx = tied.reduce((a, b) => a + b.x, 0) / tied.length
+  const cy = tied.reduce((a, b) => a + b.y, 0) / tied.length
+  let at = tied[0]!
+  for (const b of tied) if ((b.x - cx) ** 2 + (b.y - cy) ** 2 < (at.x - cx) ** 2 + (at.y - cy) ** 2) at = b
+  return {x: (at.x + 0.5) / width, y: (at.y + 0.5) / height}
+}
+
+/**
+ * The most important region: the area connected to the peak of the lightly
+ * blurred mask that stays above half of it. For attention this is the face
+ * or object most people looked at; for a flat subject mask, the subject.
+ */
+export function topRegion(mask: Mask, top: Point = peak(mask)): Rect {
+  const {width, height, data} = mask
+  const start = Math.min(height - 1, Math.floor(top.y * height)) * width + Math.min(width - 1, Math.floor(top.x * width))
+  const t = data[start]! * 0.5
+  const seen = new Uint8Array(data.length)
+  const stack = [start]
+  seen[start] = 1
+  let x0 = width, y0 = height, x1 = 0, y1 = 0
+  while (stack.length) {
+    const i = stack.pop()!
+    const x = i % width
+    const y = (i - x) / width
+    x0 = Math.min(x0, x)
+    x1 = Math.max(x1, x)
+    y0 = Math.min(y0, y)
+    y1 = Math.max(y1, y)
+    for (const j of [x > 0 ? i - 1 : -1, x < width - 1 ? i + 1 : -1, y > 0 ? i - width : -1, y < height - 1 ? i + width : -1])
+      if (j >= 0 && !seen[j] && data[j]! >= t) {
+        seen[j] = 1
+        stack.push(j)
+      }
+  }
+  return {x: x0, y: y0, width: x1 - x0 + 1, height: y1 - y0 + 1}
 }
 
 export interface Score {
@@ -103,13 +141,16 @@ export interface Score {
   kept: Record<ContainerName, number>
   /** Share of crops in which the most important spot stays visible. */
   peak: number
+  /** Share of crops that keep the whole most important region (a head). */
+  head: number
 }
 
-export function score(mask: Mask, p: Point, top: Point = peak(mask)): Score {
+export function score(mask: Mask, p: Point, top: Point = peak(mask), region: Rect = topRegion(mask, top)): Score {
   const px = Math.min(mask.width - 1, Math.floor(p.x * mask.width))
   const py = Math.min(mask.height - 1, Math.floor(p.y * mask.height))
   const kept = {} as Record<ContainerName, number>
   let peaks = 0
+  let heads = 0
   const names = Object.keys(containers) as Array<ContainerName>
   const tx = top.x * mask.width
   const ty = top.y * mask.height
@@ -119,12 +160,15 @@ export function score(mask: Mask, p: Point, top: Point = peak(mask)): Score {
       const r = cover(p, mask.width, mask.height, containers[name], mode)
       kept[name] += retained(mask, r) / modes.length
       if (tx >= r.x && tx <= r.x + r.width && ty >= r.y && ty <= r.y + r.height) peaks++
+      // Whole region inside, allowing a pixel for rounding
+      if (region.x >= r.x - 1 && region.x + region.width <= r.x + r.width + 1 && region.y >= r.y - 1 && region.y + region.height <= r.y + r.height + 1) heads++
     }
   }
   return {
     hit: mask.data[py * mask.width + px]! >= 0.5 ? 1 : 0,
     kept,
-    peak: peaks / (names.length * modes.length)
+    peak: peaks / (names.length * modes.length),
+    head: heads / (names.length * modes.length)
   }
 }
 
@@ -138,6 +182,7 @@ export function mean(scores: Array<Score>) {
     n,
     hit: scores.reduce((s, x) => s + x.hit, 0) / n,
     peak: scores.reduce((s, x) => s + x.peak, 0) / n,
+    head: scores.reduce((s, x) => s + x.head, 0) / n,
     kept,
     keptAvg: all.reduce((a, b) => a + b, 0) / all.length
   }

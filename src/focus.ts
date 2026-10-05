@@ -1,5 +1,5 @@
 import {toLab, type ImageDataLike} from './image.ts'
-import {place} from './place.ts'
+import {place, type Region} from './place.ts'
 import {borderContrast, boxBlur, mbd, normalize, skin} from './saliency.ts'
 
 export interface Box {
@@ -72,6 +72,12 @@ export interface Params {
    * relative to the image. 0 considers the whole map.
    */
   focus: number
+  /**
+   * Keep the most important spot (a face, the eyes) whole in every crop:
+   * the area around the map's peak that stays above this share of it. The
+   * point is then placed for crops alone. 0 disables it.
+   */
+  protect: number
 }
 
 export const defaults: Params = {
@@ -88,7 +94,8 @@ export const defaults: Params = {
   fit: 0.75,
   tolerance: 0.01,
   emphasis: 3,
-  focus: 0
+  focus: 0,
+  protect: 0
 }
 
 export interface Options extends Partial<Params> {}
@@ -205,12 +212,56 @@ function regions(data: Float32Array, width: number, height: number, t: number, p
   return {label, scores}
 }
 
+/**
+ * Bounds of the most important spot: the area connected to the map's peak
+ * that stays above `share` of it, with a margin so a face keeps its chin
+ * and hair.
+ */
+function top(data: Float32Array, width: number, height: number, share: number): Region {
+  let peak = 0
+  for (let i = 1; i < data.length; i++) if (data[i]! > data[peak]!) peak = i
+  const t = data[peak]! * share
+  const seen = new Uint8Array(data.length)
+  const stack = [peak]
+  seen[peak] = 1
+  let x0 = width, y0 = height, x1 = 0, y1 = 0
+  while (stack.length) {
+    const i = stack.pop()!
+    const x = i % width
+    const y = (i - x) / width
+    if (x < x0) x0 = x
+    if (x > x1) x1 = x
+    if (y < y0) y0 = y
+    if (y > y1) y1 = y
+    for (const j of [x > 0 ? i - 1 : -1, x < width - 1 ? i + 1 : -1, y > 0 ? i - width : -1, y < height - 1 ? i + width : -1])
+      if (j >= 0 && !seen[j] && data[j]! >= t) {
+        seen[j] = 1
+        stack.push(j)
+      }
+  }
+  const mx = 0.15 * (x1 - x0 + 1), my = 0.15 * (y1 - y0 + 1)
+  return {
+    x0: Math.max(0, (x0 - mx) / width),
+    y0: Math.max(0, (y0 - my) / height),
+    x1: Math.min(1, (x1 + 1 + mx) / width),
+    y1: Math.min(1, (y1 + 1 + my) / height)
+  }
+}
+
 const centre: FocusPoint = {x: 0.5, y: 0.5, box: {x: 0, y: 0, width: 1, height: 1}, confidence: 0}
 
 /** Find the main subject in an image and return its focus point. */
 export function focusPoint(image: ImageDataLike, options: Options = {}): FocusPoint {
+  return locate(saliency(image, options), options)
+}
+
+/**
+ * Turn an importance map into a focus point: pick the main subject, then
+ * place the point so typical crops keep the most importance in view.
+ */
+export function locate(map: SaliencyMap, options: Options = {}): FocusPoint {
   const p = {...defaults, ...options}
-  const {width, height, data} = saliency(image, p)
+  const {width, height, data} = map
   const n = width * height
   const base = otsu(data)
 
@@ -277,9 +328,12 @@ export function focusPoint(image: ImageDataLike, options: Options = {}): FocusPo
         const dx = x + 0.5 - cx, dy = y + 0.5 - cy
         weights[i] = Math.pow(data[i]!, p.emphasis) * (s2 ? Math.exp(-(dx * dx + dy * dy) / s2) : 1)
       }
-    const at = place(weights, width, height, {x: cx / width, y: cy / height}, p.tolerance)
-    cx += (at.x * width - cx) * p.fit
-    cy += (at.y * height - cy) * p.fit
+    const keep = p.protect ? top(data, width, height, p.protect) : undefined
+    const at = place(weights, width, height, {x: cx / width, y: cy / height}, p.tolerance, keep)
+    // A protected spot only stays whole at the placement itself
+    const fit = keep ? 1 : p.fit
+    cx += (at.x * width - cx) * fit
+    cy += (at.y * height - cy) * fit
   }
 
   // Box and confidence from the pixels that make up the subject

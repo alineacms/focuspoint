@@ -1,4 +1,5 @@
 import {defaults, focusPointFromImage, saliency, type FocusPoint} from '../src/browser.ts'
+import {focusPointFromImage as modelPointFromImage, saliency as modelSaliency} from '../src/model/browser.ts'
 
 /** Container shapes previewed, matching the evaluation. */
 const shapes = [
@@ -31,6 +32,7 @@ const drop = $<HTMLElement>('drop')
 const showHeat = $<HTMLInputElement>('show-heat')
 const showBox = $<HTMLInputElement>('show-box')
 const compare = $<HTMLInputElement>('compare')
+const useModel = $<HTMLInputElement>('use-model')
 const crops = $<HTMLElement>('crops')
 const readout = $<HTMLElement>('readout')
 const message = $<HTMLElement>('message')
@@ -81,7 +83,7 @@ function heatmap(image: ImageBitmap): HTMLCanvasElement {
   src.height = h
   const sctx = src.getContext('2d', {willReadFrequently: true})!
   sctx.drawImage(image, 0, 0, w, h)
-  const map = saliency(sctx.getImageData(0, 0, w, h))
+  const map = (useModel.checked ? modelSaliency : saliency)(sctx.getImageData(0, 0, w, h))
   const out = document.createElement('canvas')
   out.width = map.width
   out.height = map.height
@@ -242,7 +244,7 @@ function render() {
 
 async function analyse(image: ImageBitmap, name: string) {
   const t = performance.now()
-  const point = focusPointFromImage(image)
+  const point = (useModel.checked ? modelPointFromImage : focusPointFromImage)(image)
   const ms = performance.now() - t
   state = {image, name, point, ms, heat: heatmap(image)}
   message.hidden = true
@@ -351,6 +353,7 @@ async function sample(): Promise<ImageBitmap> {
 
 fileInput.addEventListener('change', () => openFile(fileInput.files?.[0]))
 for (const el of [showHeat, showBox, compare]) el.addEventListener('change', render)
+useModel.addEventListener('change', () => state && analyse(state.image, state.name))
 drop.addEventListener('dragover', e => {
   e.preventDefault()
   drop.classList.add('over')

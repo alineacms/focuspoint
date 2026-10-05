@@ -53,13 +53,32 @@ The point is scored by how it crops. For five container shapes (3:1, 16:9,
 window is centred on the point and clamped to the image. Only one axis gets
 cropped, as with `object-fit: cover`.
 
-- **kept**: the share of total importance inside the window, averaged over the
-  five shapes. This is the main number.
-- **peak**: the share of crops that contain the most important spot, which is
-  the peak of the lightly blurred ground truth (for example the face most
-  people looked at).
+- **peak** ("top spot", the main number): the share of crops that contain the
+  most important spot, which is the peak of the lightly blurred ground truth
+  (for example the face most people looked at). A focus point is one point,
+  so what counts is that the thing people look at first survives every crop.
+  Flat subject masks tie over their whole interior; ties go to the middle of
+  the tied area, so on mask sets the spot is the heart of the subject (which
+  almost every crop keeps, so peak mostly discriminates on SALICON).
+- **head**: the share of crops that keep the whole most important region:
+  the area around the peak that stays above half of it. For attention that
+  is the face or object people looked at.
+- **kept**: the share of total importance inside the window, averaged over
+  the five shapes. A guard against regressions: maximising it can put the
+  point between two people and cut both.
 - **hit**: whether the point lands on the subject (importance ≥ 0.5). This is
   secondary: a good point may deliberately sit off-centre or near an edge.
+
+Two more checks:
+
+- **Faces** (`faces.ts`): on images where YuNet finds faces
+  (`train/faces.py` writes `faces.json`), the share of crops that keep the
+  main head, or every head, whole. "ideal" centres on the main head, the
+  best any point can do. Cutting through a head is the worst crop there is.
+- **Hand-marked points** (`marks.ts`): ideal points marked on the website
+  (`site/labels.json`) become `eval/data/MARKS`, a disc mask at each point, so
+  peak there is how often the crops keep the marked point. It is a test set:
+  nothing is tuned on it.
 
 Baselines:
 
@@ -75,10 +94,17 @@ but this isn't scored by default.
 
 ## Tools
 
-- `run.ts`: the benchmark. `--limit N` samples N images evenly, and `--methods` picks which methods to run.
+- `run.ts`: the benchmark. `--limit N` samples N images evenly, `--methods`
+  picks which methods to run (`model` is the learned model as shipped), and
+  `--maps <dir>` scores precomputed maps (from `train/predict.py`) through
+  the library's selection and placement.
+- `faces.ts`, `marks.ts`: the face and hand-marked checks above.
+- `report.ts`: an HTML progress report with images, for the training work.
 - `tune.ts`: a coordinate descent over the parameters. It tunes on even-numbered
-  images and reports on odd-numbered ones. `--peak` sets how much peak weighs
-  against kept.
+  images and reports on odd-numbered ones. `--peak` and `--head` set how much
+  peak and head weigh against kept, `--guard` rejects settings whose kept
+  drops more than that below the heuristic on any set, and `--maps` tunes
+  only placement, for a model's maps.
 - `failures.ts`: renders the images that lose the most against the oracle (red is the prediction, green the oracle point).
 - `debug.ts`: renders the saliency map and focus point for any images.
 

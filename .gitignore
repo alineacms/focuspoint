@@ -6,3 +6,10 @@ scripts/.size-*
 eval/.montage.ts
 *.log
 eval/.cache
+train/.venv
+train/cache
+train/runs
+eval/predictions
+__pycache__
+train/*.out
+site/dist

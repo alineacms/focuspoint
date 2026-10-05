@@ -2,6 +2,7 @@ export type {ImageDataLike} from './image.ts'
 export {
   defaults,
   focusPoint,
+  locate,
   saliency,
   type Box,
   type FocusPoint,

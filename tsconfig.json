@@ -13,5 +13,6 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src", "eval", "test", "demo", "scripts"]
+  "include": ["src", "eval", "test", "demo", "scripts", "site"],
+  "exclude": ["eval/out", "site/dist"]
 }

@@ -51,9 +51,16 @@ A point is applied by **centre-and-clamp** cropping: the crop window is
 centred on the point and pushed back inside the image. For five container
 shapes (3:1, 16:9, 1:1, 4:5, 9:16), take the largest window of that shape.
 
-- **kept** (the main number) is the share of ground-truth importance inside the
-  window, averaged over the five shapes.
-- **peak** is how often the most important spot stays inside.
+- **peak** (the main number, "top spot") is how often the most important
+  spot stays inside. A focus point is one point, so what counts is that the
+  thing people look at first survives every crop. When attention is split,
+  for example between two people, maximising kept can put the point between
+  them and let a tall crop cut off the face most people looked at. On flat
+  subject masks the spot is the middle of the subject's solid part, which
+  survives almost every crop (97% even for a fixed centre point on DUTS), so
+  peak only discriminates on SALICON.
+- **kept** is the share of ground-truth importance inside the window,
+  averaged over the five shapes. It is a guard against regressions.
 - **oracle** is the best single point per image, found by exhaustive search.
 
 ### Numbers to beat (kept / peak)
@@ -146,9 +153,14 @@ subject is", or blend them into one target. Document the choice.
    - Report size (`bun run size`, extended to the model entry) and speed
      (`scripts/bench.ts`).
 7. **Ship or stop:**
-   - Ship if **kept** improves on SALICON and DUTS-TE by a clear margin (at
-     least about +1 point each) without losing more than 0.5 elsewhere, within
-     budget.
+   - Ship if **peak** improves on SALICON by a clear margin (at least about
+     +1 point), does not drop on the mask sets, and **kept** drops by no more
+     than 1.5 on any set, within budget. Head-first placement (keeping the
+     face people look at rather than the middle of the whole subject) is
+     preferred over whole-subject coverage, which is why the kept guard is
+     loose.
+   - Also report peak on the hand-marked ideal points (`site/labels.json`,
+     `bun eval/marks.ts`). They are a test set: never tune on them.
    - When shipping, update both READMEs (method, data sources, licences,
      results table) and add a model toggle to the viewer (`demo/`).
    - Otherwise, write up what was tried and the numbers in

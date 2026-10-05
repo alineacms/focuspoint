@@ -1,0 +1,6 @@
+torch>=2.8
+torchvision
+numpy
+pillow
+brotli
+opencv-python-headless

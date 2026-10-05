@@ -1,7 +1,7 @@
 {
   "name": "@alinea/focuspoint",
   "version": "0.1.0",
-  "description": "Find the focus point of an image so the main subject survives any crop",
+  "description": "Find the focus point of an image so the main subject survives any crop. A 4 kB heuristic or a tiny learned model.",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -17,6 +17,14 @@
     "./browser": {
       "types": "./dist/browser.d.ts",
       "default": "./dist/browser.js"
+    },
+    "./model": {
+      "types": "./dist/model/index.d.ts",
+      "default": "./dist/model/index.js"
+    },
+    "./model/browser": {
+      "types": "./dist/model/browser.d.ts",
+      "default": "./dist/model/browser.js"
     }
   },
   "files": [

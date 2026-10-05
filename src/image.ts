@@ -17,7 +17,7 @@ export interface LabImage {
 }
 
 let linear: Float32Array | undefined
-function srgbToLinear(): Float32Array {
+export function srgbToLinear(): Float32Array {
   if (linear) return linear
   linear = new Float32Array(256)
   for (let i = 0; i < 256; i++) {

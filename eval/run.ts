@@ -1,16 +1,21 @@
 // Evaluate focus point methods against salient object masks.
-// Usage: bun eval/run.ts <dataset-dir> [--limit N] [--methods center,smartcrop,focuspoint]
+// Usage: bun eval/run.ts <dataset-dir> [--limit N] [--methods center,smartcrop,focuspoint,model]
+//   [--maps eval/predictions/<model>]
+// --maps scores precomputed importance maps (<dir>/<dataset>/<image>.f32)
+// through the library's subject selection and crop placement.
 // A dataset dir holds images/*.jpg and masks/*.png with matching basenames,
 // or fixations/*.png density maps (scaled so their peak is 1).
 import sharp from 'sharp'
 import smartcropModule from 'smartcrop'
 import {basename, join} from 'node:path'
 import {existsSync} from 'node:fs'
-import {readdir} from 'node:fs/promises'
+import {readFile, readdir} from 'node:fs/promises'
 import {parseArgs} from 'node:util'
-import {focusPoint, type Options} from '../src/index.ts'
+import {defaults, focusPoint, locate, type Options, type SaliencyMap} from '../src/index.ts'
+import {focusPoint as modelPoint} from '../src/model/index.ts'
+import {resize} from '../src/model/resize.ts'
 import {load} from './load.ts'
-import {containers, mean, oracle, peak, score, type Mask, type Point, type Score} from './metrics.ts'
+import {containers, mean, oracle, peak, score, topRegion, type Mask, type Point, type Rect, type Score} from './metrics.ts'
 
 // The published typings only cover the browser entry point
 const smartcrop = smartcropModule as unknown as {
@@ -19,11 +24,15 @@ const smartcrop = smartcropModule as unknown as {
 }
 
 export interface Sample {
+  /** Dataset directory name */
+  set: string
   name: string
   image: {data: Uint8ClampedArray; width: number; height: number}
   mask: Mask
   /** Most important spot of the mask, precomputed. */
   peak: Point
+  /** Most important region around it, precomputed. */
+  region: Rect
 }
 
 /** Load every image/mask pair at evaluation resolution (256px). */
@@ -55,7 +64,8 @@ export async function loadDataset(dir: string, limit = Infinity): Promise<Array<
       }
       for (let i = 0; i < data.length; i++) data[i] = raw[i]! / max
       const mask = {width: image.width, height: image.height, data}
-      return {name, image, mask, peak: peak(mask)}
+      const top = peak(mask)
+      return {set: basename(dir), name, image, mask, peak: top, region: topRegion(mask, top)}
     })
   )
 }
@@ -85,15 +95,53 @@ async function smartcropPoint(image: Sample['image']): Promise<Point> {
 export type Method = (s: Sample) => Promise<Score> | Score
 
 export const methods: Record<string, Method> = {
-  center: s => score(s.mask, {x: 0.5, y: 0.5}, s.peak),
+  center: s => score(s.mask, {x: 0.5, y: 0.5}, s.peak, s.region),
   // Upper bound: the best single point given the ground truth
-  oracle: s => score(s.mask, oracle(s.mask), s.peak),
-  smartcrop: async s => score(s.mask, await smartcropPoint(s.image), s.peak),
-  focuspoint: s => score(s.mask, focusPoint(s.image), s.peak)
+  oracle: s => score(s.mask, oracle(s.mask), s.peak, s.region),
+  smartcrop: async s => score(s.mask, await smartcropPoint(s.image), s.peak, s.region),
+  focuspoint: s => score(s.mask, focusPoint(s.image), s.peak, s.region),
+  // The learned model, exactly as @alinea/focuspoint/model ships it
+  model: s => score(s.mask, modelPoint(s.image), s.peak, s.region),
+  // The model without protecting the top spot: more of the whole subject
+  'model-whole': s => score(s.mask, modelPoint(s.image, {protect: 0}), s.peak, s.region)
 }
 
 export function withOptions(options: Options): Method {
-  return s => score(s.mask, focusPoint(s.image, options), s.peak)
+  return s => score(s.mask, focusPoint(s.image, options), s.peak, s.region)
+}
+
+/**
+ * Read a map written by train/predict.py: width and height as uint32, then
+ * float32 values, little endian.
+ */
+export async function readMap(file: string): Promise<SaliencyMap> {
+  const buf = await readFile(file)
+  const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength)
+  const width = view.getUint32(0, true)
+  const height = view.getUint32(4, true)
+  const data = new Float32Array(width * height)
+  for (let i = 0; i < data.length; i++) data[i] = view.getFloat32(8 + i * 4, true)
+  return {width, height, data}
+}
+
+/** Stretch a square model map back to the image's aspect at the working size. */
+export function fit(map: SaliencyMap, image: Sample['image'], size = defaults.size): SaliencyMap {
+  const scale = size / Math.max(image.width, image.height)
+  const width = Math.max(1, Math.round(image.width * scale))
+  const height = Math.max(1, Math.round(image.height * scale))
+  return {width, height, data: resize(map.data, map.width, map.height, width, height)}
+}
+
+const maps = new Map<string, SaliencyMap>()
+
+/** Score precomputed maps from `dir/<dataset>/<image>.f32`. */
+export function withMaps(dir: string, options: Options = {}): Method {
+  return async s => {
+    const file = join(dir, s.set, `${s.name}.f32`)
+    let map = maps.get(file)
+    if (!map) maps.set(file, (map = await readMap(file)))
+    return score(s.mask, locate(fit(map, s.image, options.size), options), s.peak, s.region)
+  }
 }
 
 export async function evaluate(samples: Array<Sample>, method: Method) {
@@ -106,12 +154,12 @@ export type Result = Awaited<ReturnType<typeof evaluate>>
 
 export function format(name: string, r: Result) {
   const pct = (v: number) => (v * 100).toFixed(1).padStart(6) + '%'
-  return [name.padEnd(12), pct(r.hit), pct(r.peak), ...Object.values(r.kept).map(pct), pct(r.keptAvg)].join(' ')
+  return [name.padEnd(12), pct(r.peak), pct(r.head), ...Object.values(r.kept).map(pct), pct(r.keptAvg)].join(' ')
 }
 
 export const header = [
   'method'.padEnd(12),
-  ...['hit', 'peak', ...Object.keys(containers), 'kept'].map(k => k.padStart(7))
+  ...['peak', 'head', ...Object.keys(containers), 'kept'].map(k => k.padStart(7))
 ].join(' ')
 
 if (import.meta.main) {
@@ -119,7 +167,8 @@ if (import.meta.main) {
     allowPositionals: true,
     options: {
       limit: {type: 'string'},
-      methods: {type: 'string', default: 'center,smartcrop,focuspoint'}
+      methods: {type: 'string', default: 'center,smartcrop,focuspoint'},
+      maps: {type: 'string', multiple: true, default: []}
     }
   })
   for (const dir of positionals) {
@@ -132,6 +181,10 @@ if (import.meta.main) {
       const r = await evaluate(samples, methods[name]!)
       const ms = (performance.now() - t) / samples.length
       console.log(format(name, r), ` ${ms.toFixed(1)}ms/img`)
+    }
+    for (const maps of values.maps) {
+      const r = await evaluate(samples, withMaps(maps))
+      console.log(format(basename(maps), r))
     }
   }
 }

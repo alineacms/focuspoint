@@ -90,6 +90,22 @@ for name in "${names[@]}"; do
         "https://s3.amazonaws.com/open-images-dataset/validation/{}.jpg"
       name=OPENIMAGES-LLM
       ;;
+    OPENIMAGES-U)
+      # 30000 unlabelled Open Images V7 photos (CC BY 2.0) for distillation:
+      # every validation image except the LLM sample, then test images
+      mkdir -p data/OPENIMAGES-U/images .cache/openimages
+      list=.cache/openimages/unlabelled.txt
+      if [ ! -f "$list" ]; then
+        for split in validation test; do
+          [ -f ".cache/openimages/$split.csv" ] || curl -sSf -o ".cache/openimages/$split.csv" \
+            "https://storage.googleapis.com/openimages/2018_04/$split/$split-images-with-rotation.csv"
+          tail -n +2 ".cache/openimages/$split.csv" | cut -d, -f1,2
+        done | grep -v -F -f <(tail -n +2 llm/openimages.csv | cut -d, -f1) | awk 'NR <= 30000' > "$list"
+      fi
+      while IFS=, read -r id split; do
+        [ -f "data/OPENIMAGES-U/images/$id.jpg" ] || echo "$split/$id"
+      done < "$list" | xargs -P 16 -I{} sh -c 'curl -sSf --retry 3 -o "data/OPENIMAGES-U/images/$(basename {}).jpg" "https://s3.amazonaws.com/open-images-dataset/{}.jpg" || true'
+      ;;
     *) echo "unknown dataset $name" >&2; exit 1 ;;
   esac
   echo "   $(ls data/$name/images | wc -l) images"
