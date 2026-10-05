@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>focuspoint</title>
+<meta name="description" content="Find the focus point of an image so any crop keeps what matters. A 4 kB heuristic or a tiny learned model, in plain JavaScript.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a contact sheet. Controls sit in a sticky loupe column, photos fill a masonry grid; crops are marked like grease pencil on a lightbox (dark: a darkroom under a red safelight). */
+:root {
+  --paper: #eef0eb;
+  --sheet: #fbfbf8;
+  --ink: #18191b;
+  --muted: #646862;
+  --rule: #d6d9d1;
+  --pencil: #df2f1c;
+  --mark: #0f8a5f;
+  --veil: rgba(238, 240, 235, 0.72);
+  --display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --body: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141110;
+    --sheet: #1c1817;
+    --ink: #efe8e3;
+    --muted: #a0958e;
+    --rule: #332c29;
+    --pencil: #ff4b37;
+    --mark: #4fd6a2;
+    --veil: rgba(20, 17, 16, 0.74);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141110;
+  --sheet: #1c1817;
+  --ink: #efe8e3;
+  --muted: #a0958e;
+  --rule: #332c29;
+  --pencil: #ff4b37;
+  --mark: #4fd6a2;
+  --veil: rgba(20, 17, 16, 0.74);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 15px/1.5 var(--body);
+  font-variation-settings: 'wdth' 100;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--pencil); }
+:focus-visible { outline: 2px solid var(--pencil); outline-offset: 2px; }
+
+.page {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding-inline: 24px;
+  padding-block: 28px 64px;
+}
+
+/* Loupe: the control column */
+.loupe {
+  position: sticky;
+  top: calc(env(safe-area-inset-top, 0px) + 20px);
+  align-self: start;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding-right: 4px;
+}
+.mark { display: flex; flex-direction: column; gap: 6px; }
+.wordmark {
+  margin: 0;
+  font: 850 40px/0.9 var(--display);
+  font-variation-settings: 'wdth' 125;
+  letter-spacing: -0.02em;
+}
+.wordmark i { font-style: normal; color: var(--pencil); }
+.tagline { margin: 0; color: var(--muted); font-size: 15px; text-wrap: balance; }
+
+.group { display: flex; flex-direction: column; gap: 8px; }
+.label {
+  font: 600 11px/1 var(--display);
+  font-variation-settings: 'wdth' 75;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+}
+.label output { font-family: var(--mono); letter-spacing: 0; text-transform: none; color: var(--ink); font-weight: 500; }
+
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; background: var(--sheet); }
+.seg label { flex: 1 1 auto; position: relative; }
+.seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.seg span {
+  display: block;
+  padding: 7px 8px;
+  text-align: center;
+  font: 500 13px/1.2 var(--display);
+  font-variation-settings: 'wdth' 85;
+  white-space: nowrap;
+  border-right: 1px solid var(--rule);
+}
+.seg label:last-child span { border-right: 0; }
+.seg input:checked + span { background: var(--ink); color: var(--paper); }
+.seg input:focus-visible + span { outline: 2px solid var(--pencil); outline-offset: -2px; }
+
+.checks { display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.checks label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+input[type="checkbox"] { accent-color: var(--pencil); width: 15px; height: 15px; margin: 0; }
+
+.sliders { display: flex; flex-direction: column; gap: 12px; }
+.slider { display: flex; flex-direction: column; gap: 5px; }
+.slider small { color: var(--muted); font-size: 12px; line-height: 1.35; }
+input[type="range"] { width: 100%; accent-color: var(--pencil); margin: 0; }
+details { border-top: 1px solid var(--rule); padding-top: 14px; }
+summary { cursor: pointer; list-style: none; }
+summary::-webkit-details-marker { display: none; }
+summary .label::after { content: '+'; font-family: var(--mono); }
+details[open] summary .label::after { content: '−'; }
+details[open] summary { margin-bottom: 14px; }
+
+.button {
+  font: 500 13px/1 var(--display);
+  padding: 8px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--sheet);
+  color: var(--ink);
+  cursor: pointer;
+}
+.button:hover { border-color: var(--ink); }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+.readout {
+  font: 400 12px/1.6 var(--mono);
+  color: var(--muted);
+  border-top: 1px solid var(--rule);
+  padding-top: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.readout b { color: var(--ink); font-weight: 500; }
+
+/* Intro above the sheet */
+.intro { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px; margin-bottom: 28px; align-items: end; }
+.intro h2 {
+  margin: 0;
+  font: 750 clamp(26px, 3.2vw, 40px)/1.05 var(--display);
+  font-variation-settings: 'wdth' 112;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  max-width: 22ch;
+}
+.intro p { margin: 0; color: var(--muted); max-width: 60ch; }
+.code {
+  margin: 0;
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 12px 14px;
+  font: 400 12.5px/1.6 var(--mono);
+  overflow-x: auto;
+  white-space: pre;
+}
+.code .k { color: var(--pencil); }
+.code .c { color: var(--muted); }
+
+/* The sheet: masonry by columns */
+.sheet { columns: 260px; column-gap: 18px; }
+.tile { break-inside: avoid; margin: 0 0 18px; display: flex; flex-direction: column; gap: 6px; }
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--rule);
+  aspect-ratio: var(--aspect);
+  max-width: 100%;
+  transition: aspect-ratio 0.45s cubic-bezier(.3,.7,.2,1);
+}
+.frame img, .frame canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--pos, 50% 50%);
+  transition: object-position 0.45s cubic-bezier(.3,.7,.2,1);
+}
+.frame img { opacity: 0; }
+.frame img.ready { opacity: 1; transition: object-position 0.45s cubic-bezier(.3,.7,.2,1), opacity 0.4s; }
+.frame canvas { pointer-events: none; opacity: 0.85; mix-blend-mode: normal; }
+.window {
+  position: absolute;
+  border: 2px solid var(--pencil);
+  box-shadow: 0 0 0 100vmax var(--veil);
+  border-radius: 2px;
+  transition: left 0.45s, top 0.45s, width 0.45s, height 0.45s;
+  pointer-events: none;
+}
+.box { position: absolute; border: 1px dashed color-mix(in srgb, #fff 85%, transparent); outline: 1px dashed rgba(0,0,0,.35); outline-offset: 1px; pointer-events: none; transition: all 0.45s; }
+.af {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  margin: -13px 0 0 -13px;
+  left: var(--px, 50%);
+  top: var(--py, 50%);
+  transition: left 0.45s cubic-bezier(.3,.7,.2,1), top 0.45s cubic-bezier(.3,.7,.2,1);
+  pointer-events: none;
+  filter: drop-shadow(0 0 1.5px rgba(0,0,0,.6));
+}
+.af svg, .ideal svg { width: 100%; height: 100%; display: block; }
+.ideal { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; left: var(--px); top: var(--py); pointer-events: none; filter: drop-shadow(0 0 1.5px rgba(0,0,0,.7)); }
+body.marking .frame { cursor: crosshair; }
+.tile figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font: 400 11.5px/1.35 var(--mono);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.tile figcaption a { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.tile figcaption span { flex: none; }
+.tile.own .frame { outline: 2px solid var(--pencil); outline-offset: 2px; }
+
+.drop { border: 1.5px dashed var(--rule); border-radius: 6px; padding: 12px; font-size: 13px; color: var(--muted); text-align: center; cursor: pointer; }
+.drop.over { border-color: var(--pencil); color: var(--ink); }
+.drop input { display: none; }
+
+footer {
+  grid-column: 2;
+  border-top: 1px solid var(--rule);
+  padding-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+footer h3 { margin: 0 0 6px; font: 650 13px/1.2 var(--display); color: var(--ink); letter-spacing: 0.02em; }
+footer p { margin: 0; max-width: 60ch; }
+
+@media (max-width: 900px) {
+  .page { grid-template-columns: minmax(0, 1fr); padding-inline: 16px; gap: 24px; }
+  .loupe { position: static; max-height: none; overflow: visible; }
+  .intro { grid-template-columns: minmax(0, 1fr); }
+  footer { grid-column: 1; }
+  .sheet { columns: 160px; column-gap: 12px; }
+  .tile { margin-bottom: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <aside class="loupe" aria-label="Settings">
+    <div class="mark">
+      <h1 class="wordmark">focus<i>·</i>point</h1>
+      <p class="tagline">Find the one point every crop should keep.</p>
+    </div>
+
+    <div class="group">
+      <div class="label">Method</div>
+      <div class="seg" role="radiogroup" aria-label="Method">
+        <label><input type="radio" name="method" id="method-model" value="model" checked><span>Model</span></label>
+        <label><input type="radio" name="method" id="method-heuristic" value="heuristic"><span>Heuristic</span></label>
+        <label><input type="radio" name="method" id="method-centre" value="centre"><span>Centre</span></label>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="label">Container</div>
+      <div class="seg" role="radiogroup" aria-label="Container shape" id="shapes"></div>
+    </div>
+
+    <div class="group">
+      <div class="label">View</div>
+      <div class="seg" role="radiogroup" aria-label="View">
+        <label><input type="radio" name="view" id="view-crop" value="crop" checked><span>Cropped</span></label>
+        <label><input type="radio" name="view" id="view-full" value="full"><span>Full frame</span></label>
+      </div>
+      <div class="checks">
+        <label><input type="checkbox" id="show-point" checked> Focus point</label>
+        <label><input type="checkbox" id="show-heat"> Importance map</label>
+        <label><input type="checkbox" id="show-box"> Subject box</label>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="label">Your marks</div>
+      <div class="checks">
+        <label><input type="checkbox" id="mark"> Mark ideal point (click a photo)</label>
+      </div>
+      <div class="row"><button class="button" id="copy" type="button">Copy marks</button></div>
+    </div>
+
+    <details id="tuning" open>
+      <summary><span class="label">Tuning</span></summary>
+      <div class="sliders" id="sliders"></div>
+      <div class="row" style="margin-top:14px"><button class="button" id="reset" type="button">Reset to defaults</button></div>
+    </details>
+
+    <label class="drop" id="drop">
+      <input type="file" id="file" accept="image/*" multiple>
+      Drop your own photos here, or click to choose. They stay in your browser.
+    </label>
+
+    <div class="readout" id="readout">Loading photos…</div>
+  </aside>
+
+  <main>
+    <section class="intro">
+      <div>
+        <h2>Crops that keep the face, the dog, the surfer.</h2>
+        <p style="margin-top:12px">Every photo below is cropped live around the point focuspoint picks for it. Change the container shape and watch the crops follow. Tune the settings on the left to see how each one moves the point.</p>
+      </div>
+      <pre class="code" aria-label="Usage"><span class="k">import</span> {focusPoint} <span class="k">from</span> '@alinea/focuspoint/model'
+
+<span class="k">const</span> {x, y} = focusPoint({data, width, height})
+<span class="c">// centre every crop on (x, y), clamped to the image</span></pre>
+    </section>
+    <div class="sheet" id="sheet"></div>
+  </main>
+
+  <footer>
+    <div>
+      <h3>Two ways to find the point</h3>
+      <p>The heuristic (about 4 kB) scores how cut off each region is from the image border, plus skin tone and a centre bias. The model replaces that importance map with a tiny learned network that knows a face matters more than a sign. Both then pick the subject, keep its most important spot whole, and place the point so typical crops keep it in view.</p>
+    </div>
+    <div>
+      <h3>Measured on what people look at</h3>
+      <p id="results">On photos with faces, the model keeps the main head whole in 78–84% of crops, against 59–66% for the heuristic and 57–64% for a centred crop. On 55 hand-marked photos it keeps the marked point in 94% of crops. 35 kB, 4–6 ms per image.</p>
+    </div>
+    <div>
+      <h3>Photos</h3>
+      <p>All photos are from <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>, credited on each tile. Everything runs in your browser; nothing is uploaded.</p>
+    </div>
+  </footer>
+</div>
+<script>window.PHOTOS = /*PHOTOS*/</script>
+<script>/*SCRIPT*/</script>
+</body>
+</html>
