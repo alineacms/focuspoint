@@ -24,6 +24,18 @@ collect() {
   find "$2" -maxdepth 1 -type f -name "$3" -exec cp {} "$1"/ \;
 }
 
+# salicon <repo> <name> <coco-split>: attention maps plus COCO images
+salicon() {
+  sparse "https://github.com/dogsteven/$1" "$1" '/*'
+  mkdir -p "data/$2/images" "data/$2/fixations"
+  find ".cache/$1" -name '*.png' -exec cp {} "data/$2/fixations/" \;
+  for f in "data/$2/fixations"/*.png; do
+    base=$(basename "$f" .png)
+    [ -f "data/$2/images/$base.jpg" ] || echo "$base"
+  done | xargs -P 8 -I{} curl -sSf --retry 3 -o "data/$2/images/{}.jpg" \
+    "https://s3.amazonaws.com/images.cocodataset.org/$3/{}.jpg"
+}
+
 for name in "${names[@]}"; do
   echo "== $name"
   case $name in
@@ -49,14 +61,34 @@ for name in "${names[@]}"; do
       ;;
     SALICON)
       # Mouse-tracking attention maps for the 5000 SALICON val images (COCO val2014)
-      sparse https://github.com/dogsteven/salicon-maps-val salicon '/*'
-      mkdir -p data/SALICON/images data/SALICON/fixations
-      find .cache/salicon -name '*.png' -exec cp {} data/SALICON/fixations/ \;
-      for f in data/SALICON/fixations/*.png; do
-        base=$(basename "$f" .png)
-        [ -f "data/SALICON/images/$base.jpg" ] || echo "$base"
-      done | xargs -P 8 -I{} curl -sSf --retry 3 -o "data/SALICON/images/{}.jpg" \
-        "https://s3.amazonaws.com/images.cocodataset.org/val2014/{}.jpg"
+      salicon salicon-maps-val SALICON val2014
+      ;;
+    SALICON-TR)
+      # The 10000 SALICON train images (COCO train2014), for training only
+      salicon salicon-maps-train SALICON-TR train2014
+      ;;
+    DUTS-TR)
+      # 10553 training images, for training only
+      sparse https://github.com/beqooo09/SOD_Project sod /dataset/DUTS-TR/
+      collect data/DUTS-TR/images .cache/sod/dataset/DUTS-TR/DUTS-TR-Image '*.jpg'
+      collect data/DUTS-TR/masks .cache/sod/dataset/DUTS-TR/DUTS-TR-Mask '*.png'
+      ;;
+    LLM)
+      # The images labelled by a vision LLM (eval/llm): 300 SALICON train
+      # images with their attention maps, and 200 Open Images photos
+      # (CC BY 2.0, attribution in eval/llm/openimages.csv)
+      mkdir -p data/SALICON-LLM/images data/SALICON-LLM/fixations data/OPENIMAGES-LLM/images
+      sparse https://github.com/dogsteven/salicon-maps-train salicon-maps-train '/*'
+      for n in $(cat llm/salicon.txt); do
+        cp ".cache/salicon-maps-train/train/$n.png" data/SALICON-LLM/fixations/
+        [ -f "data/SALICON-LLM/images/$n.jpg" ] || echo "$n"
+      done | xargs -P 8 -I{} curl -sSf --retry 3 -o "data/SALICON-LLM/images/{}.jpg" \
+        "https://s3.amazonaws.com/images.cocodataset.org/train2014/{}.jpg"
+      tail -n +2 llm/openimages.csv | cut -d, -f1 | while read -r id; do
+        [ -f "data/OPENIMAGES-LLM/images/$id.jpg" ] || echo "$id"
+      done | xargs -P 8 -I{} curl -sSf --retry 3 -o "data/OPENIMAGES-LLM/images/{}.jpg" \
+        "https://s3.amazonaws.com/open-images-dataset/validation/{}.jpg"
+      name=OPENIMAGES-LLM
       ;;
     *) echo "unknown dataset $name" >&2; exit 1 ;;
   esac

@@ -1,0 +1,299 @@
+{"name": "COCO_train2014_000000000009", "subject": "Grilled meat and vegetables", "cells": {"C4": 1, "C5": 1, "D4": 1, "D5": 1, "C3": 0.8, "D3": 0.8, "C6": 0.8, "D6": 0.8, "E5": 0.6, "F5": 0.6, "G5": 0.6}, "point": "D5"}
+{"name": "COCO_train2014_000000001523", "subject": "Red and blue trucks", "cells": {"C4": 1, "C5": 1, "D4": 1, "D5": 1, "F3": 0.9, "F4": 0.9, "F5": 0.8, "B4": 0.7, "E3": 0.7, "G4": 0.7}, "point": "D5"}
+{"name": "COCO_train2014_000000003478", "subject": "People with umbrellas outdoors", "cells": {"B3": 1, "B4": 1, "C3": 0.9, "C4": 0.9, "F4": 0.8, "F5": 0.8, "G4": 0.7, "G5": 0.7, "B5": 0.7, "C5": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000004794", "subject": "Salad with vegetables", "cells": {"D3": 0.9, "D4": 1, "D5": 1, "E3": 0.9, "E4": 1, "E5": 1, "F3": 0.8, "F4": 0.8, "F5": 0.8, "C4": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000006595", "subject": "Beans and peppers dish", "cells": {"D3": 0.8, "D4": 1, "D5": 1, "E3": 0.9, "E4": 1, "E5": 1, "F4": 0.8, "F5": 0.8, "E6": 0.7, "D6": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000008936", "subject": "Giraffe in enclosure", "cells": {"C3": 1, "C4": 1, "D3": 0.9, "D4": 0.9, "C5": 0.8, "C6": 0.8, "D5": 0.7, "D6": 0.7, "B4": 0.6}, "point": "C4"}
+{"name": "COCO_train2014_000000011075", "subject": "Person on TV screen", "cells": {"D3": 1, "D4": 1, "D5": 1, "E3": 0.9, "E4": 0.9, "E5": 0.9, "D6": 0.8, "E6": 0.8, "F4": 0.7}, "point": "D5"}
+{"name": "COCO_train2014_000000012726", "subject": "Yellow recycling truck", "cells": {"E3": 1, "E4": 1, "E5": 0.9, "F3": 0.9, "F4": 0.9, "F5": 0.9, "D4": 0.8, "D5": 0.8, "G4": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000014375", "subject": "Kites and toys on beach", "cells": {"D4": 1, "D5": 1, "E4": 1, "E5": 1, "C5": 0.8, "F5": 0.8, "D6": 0.7, "E6": 0.7, "F6": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000016741", "subject": "Plated food dish", "cells": {"D4": 1, "D5": 1, "E4": 1, "E5": 1, "C4": 0.8, "C5": 0.8, "F4": 0.8, "F5": 0.8, "D6": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000019546", "subject": "Interior living space", "cells": {"D4": 1, "D5": 1, "E4": 0.9, "E5": 0.9, "D3": 0.8, "E3": 0.8, "C4": 0.7, "C5": 0.7, "F4": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000021497", "subject": "Pepperoni pizza", "cells": {"D3": 1, "D4": 1, "E3": 0.9, "E4": 0.9, "D5": 0.9, "E5": 0.9, "C4": 0.7, "F4": 0.7, "C5": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000023093", "subject": "Lion's face", "cells": {"D3": 1, "D4": 1, "D5": 1, "E3": 0.9, "E4": 0.9, "E5": 0.9, "C4": 0.8, "F4": 0.8, "D2": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000024859", "subject": "Street fair carnival scene", "cells": {"C3": 0.9, "C4": 1, "C5": 0.9, "D3": 0.9, "D4": 1, "D5": 0.9, "B4": 0.7, "B5": 0.7, "E4": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000027302", "subject": "Snowboarder on slope", "cells": {"E2": 0.9, "E3": 1, "F2": 0.8, "F3": 0.9, "E4": 0.8, "E5": 0.8, "F4": 0.8, "F5": 0.8, "D3": 0.6}, "point": "E3"}
+{"name": "COCO_train2014_000000029145", "subject": "Person's face with glasses", "cells": {"C3": 0.8, "C4": 0.8, "D3": 1, "D4": 1, "E3": 0.9, "E4": 0.9, "B4": 0.6, "F3": 0.6, "D5": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000031922", "subject": "People at casual gathering", "cells": {"D5": 1, "D6": 1, "E5": 0.9, "E6": 0.9, "E3": 0.7, "E4": 0.7, "F3": 0.6, "F4": 0.6, "D4": 0.7}, "point": "D5"}
+{"name": "COCO_train2014_000000033596", "subject": "Computer desk setup", "cells": {"E3": 0.9, "E4": 1, "E5": 0.9, "F3": 0.9, "F4": 1, "F5": 0.9, "D3": 0.7, "D4": 0.7, "G4": 0.6}, "point": "E4"}
+{"name": "COCO_train2014_000000035407", "subject": "Sandwich on plate", "cells": {"D4": 0.9, "D5": 1, "E4": 1, "E5": 1, "C4": 0.8, "C5": 0.8, "F4": 0.8, "F5": 0.8, "D6": 0.6}, "point": "E4"}
+{"name": "COCO_train2014_000000037169", "subject": "Urban street scene", "cells": {"D3": 0.9, "D4": 1, "D5": 0.9, "E4": 1, "E5": 0.9, "F4": 0.8, "F5": 0.8, "C4": 0.7, "C5": 0.6}, "point": "E4"}
+{"name": "COCO_train2014_000000039065", "subject": "Man's face", "cells": {"B3": 1, "C3": 1, "D3": 1, "B4": 0.8, "C4": 0.8, "D4": 0.8, "E3": 0.6, "E4": 0.6, "F3": 0.5, "F4": 0.5}, "point": "C3"}
+{"name": "COCO_train2014_000000041097", "subject": "Pizza or pasta dish", "cells": {"C5": 1, "D5": 1, "E5": 1, "C6": 0.8, "D6": 0.8, "E6": 0.8, "B5": 0.5, "F5": 0.5, "B6": 0.3, "F6": 0.3}, "point": "D5"}
+{"name": "COCO_train2014_000000043270", "subject": "Sunset with church tower", "cells": {"C4": 1, "D4": 1, "E4": 1, "C5": 1, "D5": 1, "E5": 1, "B4": 0.6, "F4": 0.6, "B5": 0.6, "F5": 0.6, "C3": 0.5, "D3": 0.5}, "point": "D4"}
+{"name": "COCO_train2014_000000045131", "subject": "Bedroom interior", "cells": {"C5": 0.8, "D5": 0.8, "E5": 0.8, "C6": 0.8, "D6": 0.8, "E6": 0.8, "F4": 0.5, "G4": 0.5, "F7": 0.3, "G7": 0.3}, "point": "D5"}
+{"name": "COCO_train2014_000000046408", "subject": "Airplane at gate", "cells": {"D4": 0.8, "E4": 0.8, "D5": 1, "E5": 1, "F5": 0.8, "D6": 0.6, "E6": 0.6, "F6": 0.6, "C4": 0.5, "C5": 0.5}, "point": "D5"}
+{"name": "COCO_train2014_000000048150", "subject": "Group of people", "cells": {"B2": 1, "C2": 0.9, "D2": 0.9, "G2": 0.9, "H2": 0.9, "D3": 0.8, "E3": 0.8, "C3": 0.8, "F3": 0.7, "F2": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000050536", "subject": "Two plates of food", "cells": {"C4": 1, "D4": 1, "B5": 0.8, "C5": 0.8, "D5": 0.8, "E5": 0.8, "F4": 0.8, "G4": 0.8, "F5": 0.8, "G5": 0.8}, "point": "D5"}
+{"name": "COCO_train2014_000000052153", "subject": "Christmas tree decoration", "cells": {"E2": 0.8, "E3": 1, "E4": 1, "E5": 1, "E6": 1, "E7": 0.8, "D3": 0.5, "F3": 0.5, "D4": 0.5, "F4": 0.5}, "point": "E4"}
+{"name": "COCO_train2014_000000053793", "subject": "Group of people at table", "cells": {"B3": 0.8, "C3": 0.9, "D3": 1, "E3": 1, "F3": 0.9, "G3": 0.8, "D4": 0.8, "E4": 0.8, "D5": 0.6, "E5": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000055398", "subject": "Two people with food", "cells": {"D3": 1, "E3": 1, "D4": 0.9, "E4": 0.9, "C3": 0.6, "F3": 0.6, "C4": 0.6, "F4": 0.6, "D5": 0.5, "E5": 0.5}, "point": "D4"}
+{"name": "COCO_train2014_000000056715", "subject": "Store storefront signage", "cells": {"B3": 0.8, "C3": 1, "D3": 1, "E3": 1, "F3": 1, "G3": 0.8, "C4": 0.6, "D4": 0.6, "E4": 0.6, "F4": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000058619", "subject": "Food dishes on plates", "cells": {"C3": 0.8, "D3": 0.9, "E3": 1, "F3": 0.9, "C4": 0.9, "D4": 1, "E4": 1, "F4": 0.9, "C5": 0.8, "D5": 0.9, "E5": 0.9, "F5": 0.8}, "point": "D4"}
+{"name": "COCO_train2014_000000060402", "subject": "Woman standing", "cells": {"F3": 1, "F4": 0.9, "G3": 0.9, "G4": 0.8, "E3": 0.6, "E4": 0.6, "F5": 0.6, "G5": 0.5}, "point": "F3"}
+{"name": "COCO_train2014_000000062770", "subject": "Room interior", "cells": {"D4": 0.7, "E4": 0.7, "D5": 0.8, "E5": 0.8, "C4": 0.5, "F4": 0.5, "C5": 0.5, "F5": 0.5}, "point": "D5"}
+{"name": "COCO_train2014_000000065518", "subject": "Baseball game players", "cells": {"D4": 1, "E4": 1, "D5": 0.9, "E5": 0.9, "C4": 0.7, "F4": 0.7, "C5": 0.7, "F5": 0.7, "B4": 0.5, "G4": 0.5}, "point": "D4"}
+{"name": "COCO_train2014_000000067548", "subject": "Woman playing tennis", "cells": {"E2": 0.9, "E3": 1, "F3": 1, "E4": 0.8, "F4": 0.8, "D3": 0.6, "G3": 0.6, "D4": 0.6, "G4": 0.6, "F2": 0.5}, "point": "E3"}
+{"name": "COCO_train2014_000000069148", "subject": "Baseball player batting", "cells": {"D4": 1, "E4": 1, "D5": 0.9, "E5": 0.9, "C4": 0.7, "F4": 0.7, "C5": 0.7, "F5": 0.7, "C3": 0.5, "E3": 0.5}, "point": "D4"}
+{"name": "COCO_train2014_000000071322", "subject": "Mountain landscape", "cells": {"C4": 0.6, "D4": 0.8, "E4": 0.8, "F4": 0.6, "C5": 0.8, "D5": 1, "E5": 1, "F5": 0.8, "D6": 0.6, "E6": 0.6}, "point": "D5"}
+{"name": "COCO_train2014_000000072629", "subject": "Multiple images collage", "cells": {"D3": 0.6, "E3": 0.8, "D4": 0.9, "E4": 1, "F4": 0.8, "D5": 0.7, "E5": 0.8, "F5": 0.7, "D6": 0.7, "E6": 0.8}, "point": "E4"}
+{"name": "COCO_train2014_000000074466", "subject": "Street post sculpture", "cells": {"C2": 0.8, "D2": 0.9, "C3": 1, "D3": 1, "E2": 0.6, "C4": 0.7, "D4": 0.7, "E6": 0.7, "F6": 0.6}, "point": "C3"}
+{"name": "COCO_train2014_000000077297", "subject": "child with donuts", "cells": {"B2": 1, "C2": 1, "D3": 0.7, "D4": 0.7, "D5": 0.7, "E3": 0.7, "E4": 0.7, "E5": 0.7, "F3": 0.6, "F4": 0.6, "F5": 0.6}, "point": "C2"}
+{"name": "COCO_train2014_000000079193", "subject": "food and kitchen items", "cells": {"C5": 1, "D5": 1, "D6": 0.8, "E5": 0.8, "E6": 0.8, "E8": 0.6, "G1": 0.8, "G2": 0.8, "H2": 0.6}, "point": "D5"}
+{"name": "COCO_train2014_000000081065", "subject": "people sitting on grass", "cells": {"B4": 1, "B5": 1, "C4": 1, "C5": 1, "G2": 0.6, "G3": 0.6, "H2": 0.6, "H3": 0.6}, "point": "C4"}
+{"name": "COCO_train2014_000000083029", "subject": "industrial warehouse and truck", "cells": {"A3": 0.5, "B3": 0.5, "C3": 0.5, "G6": 0.9, "H6": 0.8}, "point": "G6"}
+{"name": "COCO_train2014_000000084829", "subject": "tennis player", "cells": {"E4": 0.9, "E5": 1, "F4": 1, "F5": 0.9, "F6": 0.7}, "point": "F5"}
+{"name": "COCO_train2014_000000086655", "subject": "man with laptop", "cells": {"C4": 0.8, "C5": 0.8, "D4": 1, "D5": 0.9, "E5": 0.8, "F2": 0.6, "G2": 0.7, "G3": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000088192", "subject": "interior with windows", "cells": {"D2": 0.9, "D3": 0.9, "E3": 0.8, "E4": 0.7, "E5": 0.7, "F5": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000090801", "subject": "bedroom interior", "cells": {"E3": 0.6, "E4": 0.6, "G4": 0.8, "G5": 0.8, "H4": 1, "H5": 0.9}, "point": "H4"}
+{"name": "COCO_train2014_000000092670", "subject": "wading bird in water", "cells": {"D4": 0.9, "D5": 1, "E5": 1, "E6": 0.9, "D6": 0.8}, "point": "E5"}
+{"name": "COCO_train2014_000000094984", "subject": "room with furniture", "cells": {"D4": 1, "D5": 0.8, "E4": 0.7, "E5": 0.7, "F6": 0.6, "G7": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000097591", "subject": "people bathing with elephant", "cells": {"C3": 0.8, "D3": 0.9, "D4": 1, "C5": 0.8, "C6": 0.8, "D5": 0.9, "D6": 0.9, "E5": 0.8, "E6": 0.8}, "point": "D4"}
+{"name": "COCO_train2014_000000099407", "subject": "cat face", "cells": {"B2": 0.7, "B3": 0.8, "B4": 0.7, "C2": 0.8, "C3": 0.9, "C4": 0.9, "D3": 1, "D4": 1, "D5": 0.9, "E3": 0.8, "E4": 0.8, "E5": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000101069", "subject": "red train locomotive", "cells": {"C2": 0.8, "C3": 0.8, "D2": 0.9, "D3": 1, "D4": 0.9, "E2": 0.8, "E3": 0.9, "E4": 0.8}, "point": "D3"}
+{"name": "COCO_train2014_000000102766", "subject": "people at restaurant", "cells": {"B3": 0.7, "C3": 1, "C4": 1, "D3": 1, "D4": 1, "F3": 0.8, "F4": 0.8, "G3": 0.8, "G4": 0.8, "D6": 0.6, "E6": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000105195", "subject": "people dining outdoors", "cells": {"B3": 0.9, "B4": 0.8, "C3": 1, "C4": 1, "D3": 1, "D4": 1, "E3": 0.7, "E4": 0.7, "D6": 0.5, "E6": 0.5}, "point": "D3"}
+{"name": "COCO_train2014_000000106646", "subject": "deli food and signage", "cells": {"C3": 0.8, "C4": 0.8, "D3": 0.9, "D4": 1, "E4": 0.7, "E5": 0.7, "F6": 0.6, "G6": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000108282", "subject": "woman eating", "cells": {"D3": 0.8, "D4": 0.8, "E3": 1, "E4": 1, "E5": 0.9, "F3": 0.9, "F4": 0.9, "F5": 0.8, "E6": 0.6, "E7": 0.6}, "point": "E4"}
+{"name": "COCO_train2014_000000110013", "subject": "cat on bookshelf", "cells": {"C4": 0.7, "C5": 0.7, "D3": 0.6, "D4": 0.8, "D5": 0.9, "D6": 0.8, "E4": 0.8, "E5": 1, "E6": 0.9, "F4": 0.7, "F5": 0.8, "F6": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000111889", "subject": "man with motorcycles", "cells": {"B2": 0.9, "B3": 1, "B4": 1, "C2": 0.8, "C3": 0.9, "C4": 0.9, "C5": 0.8, "D5": 0.7, "D6": 0.7, "E5": 0.7, "E6": 0.8, "E7": 0.7, "F6": 0.6, "F7": 0.6}, "point": "B3"}
+{"name": "COCO_train2014_000000113724", "subject": "subway train", "cells": {"D4": 0.8, "D5": 0.9, "D6": 0.8, "E4": 0.9, "E5": 1, "E6": 0.9, "E7": 0.8, "F5": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000115519", "subject": "Person", "cells": {"D4": 1, "D5": 1, "E4": 0.9, "E5": 0.9}, "point": "D5"}
+{"name": "COCO_train2014_000000117428", "subject": "Room with computer equipment", "cells": {"D3": 1, "D4": 0.8, "E3": 0.9, "E4": 0.8, "C3": 0.6, "C4": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000119263", "subject": "Babies playing", "cells": {"D4": 1, "D5": 1, "E4": 0.9, "E5": 0.9, "D3": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000121350", "subject": "Yellow couch", "cells": {"E5": 1, "E4": 0.9, "F5": 0.9, "F4": 0.8, "E6": 0.7, "F6": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000123273", "subject": "Baked chicken", "cells": {"D4": 1, "D3": 0.9, "E3": 0.8, "E4": 0.8, "C4": 0.7, "C3": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000125311", "subject": "Jewelry shop display", "cells": {"E5": 1, "E4": 0.8, "F5": 0.9, "F4": 0.8, "E6": 0.7, "F6": 0.7, "D4": 0.6, "D5": 0.6}, "point": "E5"}
+{"name": "COCO_train2014_000000127339", "subject": "Child with violin", "cells": {"D4": 1, "C4": 0.9, "D5": 0.9, "C5": 0.8, "B3": 0.7, "B4": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000129359", "subject": "Vegetables", "cells": {"E5": 1, "D5": 0.9, "E4": 0.8, "D4": 0.8, "D6": 0.7, "E6": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000131498", "subject": "Food meal", "cells": {"E2": 1, "D2": 0.8, "G5": 0.9, "F5": 0.8, "G6": 0.8, "F6": 0.7, "G7": 0.7, "H5": 0.6}, "point": "E2"}
+{"name": "COCO_train2014_000000134238", "subject": "Fruit and food", "cells": {"D5": 1, "E5": 0.9, "D6": 0.8, "E6": 0.8, "D4": 0.7, "D3": 0.6, "B2": 0.7}, "point": "D5"}
+{"name": "COCO_train2014_000000136310", "subject": "Dinner with people", "cells": {"B4": 1, "A3": 0.8, "B3": 0.8, "C3": 0.7, "C4": 0.7, "D4": 0.6}, "point": "B4"}
+{"name": "COCO_train2014_000000138367", "subject": "Food plates", "cells": {"D5": 1, "E5": 0.9, "D6": 0.8, "E6": 0.7, "G4": 0.7, "D4": 0.6}, "point": "D5"}
+{"name": "COCO_train2014_000000139748", "subject": "Salad with drinks", "cells": {"D5": 1, "E5": 0.9, "C3": 0.7, "D3": 0.7, "D4": 0.8, "E4": 0.8}, "point": "D5"}
+{"name": "COCO_train2014_000000141581", "subject": "Person on street", "cells": {"E5": 1, "D5": 0.9, "E4": 0.8, "D4": 0.8, "E6": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000143017", "subject": "Produce market stand", "cells": {"D3": 1, "C3": 0.8, "D4": 0.8, "B3": 0.7, "B4": 0.7, "G3": 0.7, "H3": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000145113", "subject": "Abstract texture", "cells": {"E3": 1, "D2": 0.7, "E2": 0.6, "F3": 0.6}, "point": "E3"}
+{"name": "COCO_train2014_000000146645", "subject": "Market with bananas", "cells": {"D2": 1, "C2": 0.8, "B2": 0.7, "G5": 0.8, "H5": 0.7, "G6": 0.7}, "point": "D2"}
+{"name": "COCO_train2014_000000148502", "subject": "Person in room", "cells": {"F4": 1, "F3": 0.8, "E5": 0.7, "F5": 0.7}, "point": "F4"}
+{"name": "COCO_train2014_000000150286", "subject": "People at beach", "cells": {"D5": 1, "D4": 0.9, "E5": 0.8, "C4": 0.7, "D6": 0.7, "E4": 0.6}, "point": "D5"}
+{"name": "COCO_train2014_000000152328", "subject": "Person on bicycle", "cells": {"E5": 1, "E4": 0.9, "F4": 0.8, "F5": 0.8, "E6": 0.7, "F6": 0.6}, "point": "E5"}
+{"name": "COCO_train2014_000000154754", "subject": "Baseball batter", "cells": {"E4": 1, "E5": 1, "F4": 1, "F5": 1, "F3": 0.9, "D4": 0.6, "D5": 0.6, "F2": 0.5, "G2": 0.5, "G3": 0.5}, "point": "F4"}
+{"name": "COCO_train2014_000000156939", "subject": "Woman gardening", "cells": {"B2": 0.9, "B3": 0.9, "B4": 0.8, "B5": 0.8, "D5": 0.7, "E5": 0.7, "E6": 0.7, "G2": 0.6, "H3": 0.6, "G3": 0.5}, "point": "B3"}
+{"name": "COCO_train2014_000000159109", "subject": "Pizza slices", "cells": {"B4": 0.9, "C4": 0.9, "D4": 0.9, "E4": 0.9, "F4": 0.9, "G4": 0.9, "B3": 0.8, "C3": 0.8, "D3": 0.8, "E3": 0.8, "F3": 0.8, "G3": 0.8}, "point": "E5"}
+{"name": "COCO_train2014_000000160931", "subject": "Baseball players", "cells": {"D3": 1, "C3": 1, "E1": 0.9, "E2": 0.9, "D4": 0.9, "C4": 0.8, "G4": 0.7, "H5": 0.7, "B3": 0.6, "C2": 0.5}, "point": "D3"}
+{"name": "COCO_train2014_000000164290", "subject": "Man in room", "cells": {"C4": 1, "C5": 0.9, "C3": 0.9, "D5": 0.8, "E5": 0.8, "F4": 0.7, "F5": 0.7, "D4": 0.6, "D6": 0.5, "E6": 0.5}, "point": "C4"}
+{"name": "COCO_train2014_000000166261", "subject": "Person lying down", "cells": {"E4": 1, "F4": 1, "E3": 1, "F3": 0.9, "E5": 0.8, "F5": 0.8, "E6": 0.8, "F6": 0.8, "D4": 0.7, "D5": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000167995", "subject": "Bowl of soup with garnish", "cells": {"D3": 1, "C3": 0.9, "B3": 0.8, "E3": 0.8, "D4": 0.8, "C4": 0.7, "E5": 0.7, "F5": 0.7, "D2": 0.6, "E2": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000170540", "subject": "Bicycle rider at night", "cells": {"E4": 1, "D4": 0.9, "E5": 0.9, "D5": 0.8, "E6": 0.8, "D6": 0.7, "F3": 0.5, "G3": 0.5, "F4": 0.4, "G4": 0.4}, "point": "E4"}
+{"name": "COCO_train2014_000000172392", "subject": "People at playground", "cells": {"C3": 1, "D3": 0.9, "C4": 0.9, "D4": 0.8, "B3": 0.7, "B4": 0.7, "D2": 0.6, "C2": 0.6, "G7": 0.5, "H7": 0.5}, "point": "C3"}
+{"name": "COCO_train2014_000000174527", "subject": "Fishing boat at dock", "cells": {"D3": 1, "C3": 0.9, "D2": 0.9, "E2": 0.9, "C4": 0.8, "D4": 0.8, "E3": 0.8, "E4": 0.7, "C5": 0.4, "D5": 0.4}, "point": "D3"}
+{"name": "COCO_train2014_000000176090", "subject": "Toilet and bathroom items", "cells": {"C4": 1, "B4": 1, "C5": 0.9, "C3": 0.9, "B5": 0.8, "D5": 0.7, "B3": 0.6, "G3": 0.6, "G4": 0.6, "E5": 0.4}, "point": "C4"}
+{"name": "COCO_train2014_000000178152", "subject": "Meat plate and soup", "cells": {"B3": 1, "C3": 1, "B4": 0.9, "C4": 0.9, "E5": 1, "F5": 1, "E6": 0.9, "F6": 0.9, "D3": 0.8, "D4": 0.8}, "point": "D4"}
+{"name": "COCO_train2014_000000179932", "subject": "Motorcycle and animals", "cells": {"C4": 1, "B4": 1, "C3": 0.9, "B3": 0.9, "C5": 0.8, "B5": 0.8, "C6": 0.7, "B6": 0.7, "G5": 0.8, "G6": 0.8}, "point": "C4"}
+{"name": "COCO_train2014_000000181367", "subject": "Yellow machine and cyclists", "cells": {"E4": 1, "F4": 1, "E5": 1, "F5": 0.9, "C5": 0.7, "C6": 0.7, "D5": 0.7, "D6": 0.7, "B4": 0.6, "B5": 0.6}, "point": "E4"}
+{"name": "COCO_train2014_000000183233", "subject": "STOP sign", "cells": {"B3": 1, "C3": 1, "B4": 0.9, "C4": 0.9, "B1": 0.8, "C1": 0.8, "B2": 0.8, "C2": 0.8, "B6": 0.7, "A7": 0.7}, "point": "B3"}
+{"name": "COCO_train2014_000000184879", "subject": "Car show", "cells": {"E8": 1, "F8": 1, "E6": 0.9, "F6": 0.9, "E4": 0.9, "F4": 0.9, "A5": 0.7, "B5": 0.7, "A6": 0.7, "B6": 0.7}, "point": "E6"}
+{"name": "COCO_train2014_000000186635", "subject": "Dog's face", "cells": {"D4": 1, "E4": 1, "D5": 1, "E5": 1, "D3": 0.9, "E3": 0.9, "D6": 0.8, "E6": 0.8, "C3": 0.8, "C4": 0.8}, "point": "D4"}
+{"name": "COCO_train2014_000000188239", "subject": "People working at table", "cells": {"D4": 1, "C4": 0.9, "E4": 0.9, "C5": 0.9, "D5": 0.9, "E5": 0.9, "F5": 0.8, "C3": 0.8, "D3": 0.8, "E3": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000190136", "subject": "Group of children", "cells": {"D5": 1, "E5": 1, "D6": 0.9, "E6": 0.9, "D2": 0.8, "E2": 0.8, "F2": 0.8, "B3": 0.7, "B4": 0.7, "D7": 0.8}, "point": "D5"}
+{"name": "COCO_train2014_000000192234", "subject": "Close-up of people", "cells": {"D4": 1, "E4": 1, "D3": 0.9, "E3": 0.9, "C3": 0.9, "C4": 0.9, "D5": 0.8, "E5": 0.8, "D6": 0.7, "E6": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000194528", "subject": "Metal animal sculptures", "cells": {"C4": 1, "D4": 1, "E4": 1, "F4": 1, "G4": 1, "C5": 1, "D5": 1, "E5": 1, "F5": 1, "G5": 1, "G6": 0.5, "C2": 0.5, "D2": 0.5}, "point": "E5"}
+{"name": "COCO_train2014_000000196981", "subject": "Child with Curious George book", "cells": {"B3": 1, "B4": 1, "B5": 0.8, "B6": 0.8, "C2": 0.9, "D2": 0.9, "E2": 0.9, "C3": 0.8, "D3": 0.8, "E3": 0.8, "C4": 0.8, "D4": 0.8, "E4": 0.8}, "point": "D4"}
+{"name": "COCO_train2014_000000198704", "subject": "Car and pedestrian on street", "cells": {"F5": 1, "F6": 1, "G6": 0.9, "H6": 0.8, "E6": 0.7}, "point": "F6"}
+{"name": "COCO_train2014_000000200867", "subject": "Elephants and tourist", "cells": {"D2": 1, "E2": 1, "F2": 0.9, "D3": 1, "E3": 1, "F3": 0.9, "E4": 0.8, "F4": 0.8, "G2": 0.9, "H2": 0.9, "G3": 0.9, "H3": 0.9, "B2": 0.8, "B3": 0.8}, "point": "E3"}
+{"name": "COCO_train2014_000000203236", "subject": "Man on boat", "cells": {"D3": 1, "D4": 1, "E5": 0.8, "D5": 0.8, "C4": 0.7, "E4": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000205125", "subject": "Food on plates", "cells": {"C2": 1, "C3": 1, "C4": 0.9, "D3": 0.9, "D4": 0.8, "E4": 0.8, "F2": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000207142", "subject": "Apple and banana", "cells": {"C2": 1, "D2": 1, "C3": 1, "D3": 1, "D4": 1, "D5": 1, "E3": 0.9, "E4": 0.9, "F2": 0.8, "F3": 0.8, "G2": 0.8, "G3": 0.8}, "point": "D4"}
+{"name": "COCO_train2014_000000208714", "subject": "Pizza and drinks", "cells": {"B3": 1, "B4": 1, "B5": 1, "C3": 0.9, "C4": 0.9, "C5": 0.9, "D4": 0.9, "D5": 0.8, "B1": 0.6, "B2": 0.6}, "point": "C4"}
+{"name": "COCO_train2014_000000210416", "subject": "Children with toys", "cells": {"B1": 1, "B2": 1, "C2": 0.8, "C3": 0.8, "F6": 0.8, "G6": 0.8, "F7": 0.8}, "point": "D5"}
+{"name": "COCO_train2014_000000212575", "subject": "Kitchen interior", "cells": {"B5": 0.6, "C3": 0.5, "D4": 0.5, "E4": 0.5}, "point": "D4"}
+{"name": "COCO_train2014_000000213936", "subject": "Woman with artwork", "cells": {"B1": 1, "B2": 1, "B3": 1, "C2": 0.9, "C3": 0.9, "C4": 0.8, "E4": 0.6, "F4": 0.6, "E5": 0.6, "F5": 0.6}, "point": "B3"}
+{"name": "COCO_train2014_000000215776", "subject": "Woman with sports equipment", "cells": {"B1": 1, "B2": 1, "C2": 1, "C3": 1, "D2": 0.8, "D3": 0.9, "D4": 0.8, "C4": 0.8}, "point": "C3"}
+{"name": "COCO_train2014_000000217135", "subject": "Bedroom interior", "cells": {"B3": 0.5, "C3": 0.5, "D4": 0.5, "E4": 0.5, "F5": 0.5}, "point": "D4"}
+{"name": "COCO_train2014_000000219750", "subject": "Red double-decker bus", "cells": {"C4": 1, "C5": 1, "D4": 1, "D5": 1, "E4": 0.9, "E5": 0.9, "B5": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000221053", "subject": "People in gallery", "cells": {"A4": 0.8, "B5": 0.8, "B6": 0.7, "G5": 0.7, "H5": 0.7, "D3": 0.5, "D4": 0.5}, "point": "D5"}
+{"name": "COCO_train2014_000000223146", "subject": "Livestock at farm", "cells": {"C5": 1, "D5": 1, "E5": 1, "F5": 0.9, "G5": 0.8, "D4": 0.8, "C4": 0.8}, "point": "E5"}
+{"name": "COCO_train2014_000000224601", "subject": "Public transport bus", "cells": {"C4": 1, "D4": 1, "D5": 1, "E5": 0.9, "E4": 0.9, "F5": 0.8, "C5": 0.8}, "point": "D5"}
+{"name": "COCO_train2014_000000226517", "subject": "Kitchen interior", "cells": {"B2": 0.6, "C2": 0.6, "C3": 0.5, "D3": 0.5, "E5": 0.5, "F5": 0.5}, "point": "D4"}
+{"name": "COCO_train2014_000000229472", "subject": "Person with motorcycle", "cells": {"E3": 1, "F3": 1, "F4": 1, "E4": 0.9, "E5": 0.8, "F5": 0.8, "E6": 0.7, "F6": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000231104", "subject": "Commercial airplane", "cells": {"D5": 1, "E5": 1, "F5": 0.9, "G5": 0.9, "E6": 0.8, "F6": 0.8, "G6": 0.8}, "point": "E6"}
+{"name": "COCO_train2014_000000233642", "subject": "woman's face and upper body", "cells": {"B2": 1, "B3": 1, "B4": 0.8, "C2": 0.8, "C3": 1, "C4": 0.8, "D3": 0.6, "F3": 0.8, "F4": 0.8}, "point": "C3"}
+{"name": "COCO_train2014_000000236424", "subject": "bedroom interior", "cells": {"B2": 0.6, "C2": 0.6, "B5": 0.8, "C5": 0.8, "D5": 0.7, "E5": 0.8, "F5": 0.8}, "point": "E5"}
+{"name": "COCO_train2014_000000238200", "subject": "baby eating with mouth open", "cells": {"B2": 0.8, "C2": 1, "C3": 1, "D2": 0.9, "D3": 1, "D4": 0.8, "E2": 0.7, "E3": 0.7, "E4": 0.8, "E5": 0.7, "F3": 0.6, "F4": 0.6, "F5": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000240625", "subject": "cyclist on bridge", "cells": {"C3": 0.8, "D3": 1, "D4": 1, "C4": 0.8, "C5": 0.8, "D5": 0.8, "D6": 0.6, "D7": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000242739", "subject": "people on court", "cells": {"B3": 0.8, "B4": 0.8, "C3": 0.7, "C4": 0.8, "E4": 0.6, "E5": 0.8, "E6": 0.7, "F4": 0.7, "F5": 0.8, "F6": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000244683", "subject": "planes on runway", "cells": {"E2": 0.8, "F2": 0.8, "G2": 0.8, "E3": 0.7, "F3": 0.7, "C5": 0.6, "C6": 0.8, "D5": 0.6, "D6": 0.8, "B7": 0.7, "C7": 0.8}, "point": "F3"}
+{"name": "COCO_train2014_000000246539", "subject": "bowl of fruit", "cells": {"B2": 0.6, "E3": 0.9, "E4": 1, "E5": 1, "E6": 0.9, "F3": 0.8, "F4": 1, "F5": 1, "F6": 0.8}, "point": "E4"}
+{"name": "COCO_train2014_000000248023", "subject": "two military men", "cells": {"B3": 0.7, "C3": 0.8, "C4": 0.8, "D3": 0.6, "F3": 0.8, "F4": 1, "G3": 0.9, "G4": 0.8}, "point": "F4"}
+{"name": "COCO_train2014_000000250200", "subject": "boats in marina", "cells": {"B6": 0.8, "C6": 0.9, "D6": 0.8, "D7": 0.8, "E6": 0.8, "E7": 0.8, "F6": 0.8, "F7": 0.8, "G6": 0.8, "G7": 0.8}, "point": "E6"}
+{"name": "COCO_train2014_000000252193", "subject": "laptops and technology", "cells": {"B2": 0.8, "C2": 0.9, "D2": 0.8, "C3": 0.9, "D3": 1, "E3": 0.8, "C4": 0.8, "D4": 0.8, "E4": 0.7, "F2": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000253971", "subject": "rescue board on beach", "cells": {"B2": 0.7, "C1": 0.8, "C2": 0.8, "C3": 0.8, "F3": 0.7, "G3": 0.8, "D6": 0.8, "D7": 1, "E6": 0.8, "E7": 1}, "point": "D7"}
+{"name": "COCO_train2014_000000255623", "subject": "child under pink umbrella", "cells": {"D3": 0.8, "D4": 1, "E3": 0.9, "E4": 1, "D5": 0.8, "E5": 0.8, "D6": 0.7, "E6": 0.8}, "point": "E4"}
+{"name": "COCO_train2014_000000257387", "subject": "soccer players", "cells": {"B4": 0.7, "C4": 0.8, "C5": 0.8, "E5": 0.9, "E6": 1, "F5": 0.8, "F6": 0.9, "G4": 0.6, "G5": 0.8, "G6": 0.7}, "point": "E6"}
+{"name": "COCO_train2014_000000259419", "subject": "train station building", "cells": {"B3": 0.7, "B4": 0.8, "C4": 0.8, "D4": 0.7, "D5": 0.8, "E5": 0.9, "F5": 0.8}, "point": "E5"}
+{"name": "COCO_train2014_000000262172", "subject": "interior room", "cells": {"B3": 0.6, "C3": 0.7, "D3": 0.6, "D4": 0.7, "D5": 0.6, "E3": 0.6, "E5": 0.7, "F3": 0.8, "F4": 0.8, "F5": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000263974", "subject": "people on bikes and motorcycles", "cells": {"B1": 0.7, "B2": 0.8, "B3": 0.7, "C3": 0.8, "C4": 0.9, "C5": 1, "C6": 0.8, "D3": 0.8, "D4": 0.8, "D5": 0.8, "E2": 0.7, "E3": 0.8, "E4": 0.7}, "point": "C5"}
+{"name": "COCO_train2014_000000265625", "subject": "two men in conversation", "cells": {"B3": 0.9, "B4": 1, "C3": 0.8, "C4": 0.9, "D3": 0.9, "D4": 1, "E3": 0.8, "E4": 0.9, "D5": 0.6, "D6": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000267540", "subject": "vegetables and fruit bowls", "cells": {"B3": 0.7, "B4": 0.8, "C3": 0.7, "C4": 0.8, "D2": 0.7, "D3": 0.9, "D4": 1, "E2": 0.8, "E3": 1, "E4": 0.9, "F3": 0.7, "F4": 0.8, "G3": 0.7, "G4": 0.8, "D6": 0.8, "E6": 0.8}, "point": "E3"}
+{"name": "COCO_train2014_000000269213", "subject": "sailboat in harbor", "cells": {"B2": 0.6, "C2": 0.6, "D2": 0.6, "B3": 0.7, "C3": 0.7, "E6": 0.9, "E7": 1, "F6": 0.8, "F7": 0.9}, "point": "E7"}
+{"name": "COCO_train2014_000000270956", "subject": "people by bright window", "cells": {"B2": 0.7, "B3": 0.8, "C2": 0.6, "C3": 0.8, "D3": 0.7, "D4": 0.8, "E3": 0.6, "E4": 0.7, "F4": 0.8, "F5": 0.9, "F6": 1, "F7": 0.8}, "point": "F6"}
+{"name": "COCO_train2014_000000272866", "subject": "toilet in bathroom", "cells": {"B5": 1, "C5": 1, "B6": 0.8, "C6": 0.8}, "point": "B5"}
+{"name": "COCO_train2014_000000274585", "subject": "car at traffic lights", "cells": {"D4": 1, "E4": 1, "D5": 0.9, "E5": 0.9, "F4": 0.7, "F5": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000276539", "subject": "people on street", "cells": {"D2": 1, "E2": 1, "D3": 1, "E3": 1}, "point": "D3"}
+{"name": "COCO_train2014_000000278243", "subject": "kitchen cookware", "cells": {"D5": 0.8, "E5": 1, "D6": 0.7, "E6": 0.8, "F5": 0.6, "F6": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000279871", "subject": "dog on boat", "cells": {"D4": 1, "E4": 1, "D5": 0.9, "E5": 0.9, "F4": 0.5, "F5": 0.6}, "point": "E4"}
+{"name": "COCO_train2014_000000281382", "subject": "couch in living room", "cells": {"C5": 0.8, "D5": 1, "E5": 0.8, "C6": 0.8, "D6": 1, "E6": 0.8}, "point": "D5"}
+{"name": "COCO_train2014_000000282949", "subject": "airplane at airport", "cells": {"D3": 0.6, "E3": 1, "F3": 0.8, "D4": 0.7, "E4": 1, "F4": 0.9, "D5": 0.6, "E5": 1, "F5": 0.8}, "point": "E4"}
+{"name": "COCO_train2014_000000284765", "subject": "giraffes in nature", "cells": {"B5": 1, "C5": 0.9, "B6": 0.8, "C6": 0.8, "F4": 0.9, "G4": 1, "F5": 0.8, "G5": 0.9}, "point": "D5"}
+{"name": "COCO_train2014_000000286530", "subject": "person in snow", "cells": {"D4": 0.5, "E4": 0.6, "D5": 1, "E5": 1, "D6": 0.9, "E6": 1}, "point": "E5"}
+{"name": "COCO_train2014_000000288204", "subject": "group dinner", "cells": {"C4": 0.8, "D4": 0.8, "E4": 0.9, "F4": 0.8, "C5": 0.9, "D5": 1, "E5": 1, "F5": 0.9, "C6": 0.8, "D6": 0.9, "E6": 0.9, "F6": 0.8}, "point": "E5"}
+{"name": "COCO_train2014_000000289864", "subject": "elephants at water", "cells": {"B5": 0.5, "C5": 0.6, "D5": 0.7, "E5": 0.7, "F5": 0.7, "G5": 0.6, "B6": 0.8, "C6": 0.9, "D6": 1, "E6": 1, "F6": 0.9, "G6": 0.8}, "point": "E6"}
+{"name": "COCO_train2014_000000291839", "subject": "laptop at night", "cells": {"C4": 0.6, "D4": 0.7, "C5": 0.5, "D5": 0.7, "C6": 0.8, "D6": 1}, "point": "D6"}
+{"name": "COCO_train2014_000000294102", "subject": "desserts and berries", "cells": {"B4": 0.8, "C4": 0.8, "B5": 1, "C5": 1, "B6": 0.8, "C6": 0.8, "D5": 0.7, "E5": 0.7, "D6": 0.8, "E6": 0.8, "D7": 0.6, "E7": 0.5}, "point": "C5"}
+{"name": "COCO_train2014_000000295686", "subject": "art sculpture", "cells": {"C4": 0.6, "D4": 0.8, "E4": 0.9, "F4": 0.7, "C5": 0.7, "D5": 1, "E5": 1, "F5": 0.8, "C6": 0.6, "D6": 0.8, "E6": 0.9, "F6": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000297585", "subject": "bus on street", "cells": {"C3": 0.6, "D3": 0.8, "E3": 0.7, "C4": 0.7, "D4": 1, "E4": 0.8, "C5": 0.5, "D5": 0.8, "E5": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000299563", "subject": "plate of pasta", "cells": {"C3": 0.5, "D3": 0.7, "E3": 0.8, "F3": 0.6, "C4": 0.7, "D4": 0.8, "E4": 1, "F4": 0.8, "C5": 0.8, "D5": 0.9, "E5": 0.9, "F5": 0.8, "C6": 0.6, "D6": 0.7, "E6": 0.7, "F6": 0.6}, "point": "E4"}
+{"name": "COCO_train2014_000000300887", "subject": "horse racing", "cells": {"B5": 0.6, "C5": 0.8, "D5": 0.9, "E5": 1, "F5": 1, "G5": 0.8, "H5": 0.6, "B6": 0.5, "C6": 0.7, "D6": 0.8, "E6": 0.9, "F6": 0.9, "G6": 0.7, "H6": 0.5}, "point": "E5"}
+{"name": "COCO_train2014_000000302595", "subject": "tennis player serving", "cells": {"E3": 0.8, "F3": 0.9, "E4": 1, "F4": 1, "E5": 0.9, "F5": 0.8}, "point": "F4"}
+{"name": "COCO_train2014_000000304693", "subject": "horse carriage", "cells": {"B5": 0.8, "B6": 0.9, "B7": 0.8, "C5": 1, "D5": 0.8, "C6": 1, "D6": 0.8, "C7": 0.8, "D7": 0.6}, "point": "C6"}
+{"name": "COCO_train2014_000000306485", "subject": "desktop workspace", "cells": {"C3": 0.5, "D3": 0.7, "E3": 0.5, "C4": 0.6, "D4": 0.8, "E4": 0.6, "C5": 0.7, "D5": 1, "E5": 0.8}, "point": "D5"}
+{"name": "COCO_train2014_000000308197", "subject": "dog in living room", "cells": {"D2": 1, "E2": 0.8, "D3": 0.6, "E3": 0.6}, "point": "D2"}
+{"name": "COCO_train2014_000000309797", "subject": "bathroom sink and mirror", "cells": {"D4": 0.8, "E4": 0.8, "D5": 1, "E5": 0.8}, "point": "D5"}
+{"name": "COCO_train2014_000000311726", "subject": "dinosaur skeletons", "cells": {"D3": 1, "E3": 1, "D4": 0.9, "E4": 0.9, "C3": 0.7, "C4": 0.7, "F3": 0.7, "F4": 0.7}, "point": "D3"}
+{"name": "COCO_train2014_000000313569", "subject": "person at thermal display", "cells": {"C1": 0.8, "D1": 0.8, "C2": 0.9, "D2": 1, "B2": 0.7, "C3": 0.6, "D3": 0.7, "E2": 0.6}, "point": "D2"}
+{"name": "COCO_train2014_000000315030", "subject": "hands with musical instrument", "cells": {"D2": 0.7, "E2": 0.7, "D3": 0.9, "E3": 0.9, "D4": 1, "E4": 1, "C3": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000317460", "subject": "red London bus", "cells": {"C4": 0.7, "D4": 0.9, "E4": 0.9, "C5": 0.8, "D5": 1, "E5": 1, "C6": 0.7, "D6": 0.8, "E6": 0.8}, "point": "D5"}
+{"name": "COCO_train2014_000000319122", "subject": "salad and steak plate", "cells": {"B3": 0.6, "C3": 0.6, "B4": 0.7, "C4": 0.7, "B5": 0.8, "C5": 0.8, "B6": 0.7, "C6": 0.7, "E4": 0.9, "F4": 0.9, "E5": 1, "F5": 1, "E6": 0.8, "F6": 0.8}, "point": "E5"}
+{"name": "COCO_train2014_000000320911", "subject": "airplane on tarmac", "cells": {"C3": 0.8, "D3": 0.9, "E3": 0.9, "B4": 0.6, "C4": 0.9, "D4": 1, "E4": 1, "F4": 0.8, "D5": 0.7, "E5": 0.7, "D6": 0.6, "E6": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000323133", "subject": "bedroom with window", "cells": {"D2": 0.7, "E2": 0.8, "D3": 1, "E3": 0.9, "D4": 0.7, "E4": 0.8, "E5": 0.6, "F5": 0.6, "E6": 0.6, "F6": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000325089", "subject": "doorway with figure", "cells": {"D2": 0.6, "E2": 0.9, "F2": 0.8, "D3": 0.6, "E3": 1, "F3": 1, "D4": 0.6, "E4": 0.9, "F4": 0.8, "D5": 0.5, "E5": 0.7, "F5": 0.6}, "point": "E3"}
+{"name": "COCO_train2014_000000326903", "subject": "chips and dip", "cells": {"C3": 0.7, "D3": 0.8, "E3": 0.8, "B4": 0.6, "C4": 0.8, "D4": 1, "E4": 1, "F4": 0.9, "G4": 0.8, "C5": 0.7, "D5": 0.9, "E5": 1, "F5": 0.9, "G5": 0.8, "F6": 0.8, "G6": 0.8}, "point": "D4"}
+{"name": "COCO_train2014_000000328487", "subject": "city street with bus", "cells": {"B2": 0.5, "C2": 0.5, "D2": 0.6, "B3": 0.6, "C3": 0.6, "D3": 0.6, "B4": 0.6, "C4": 0.6, "D4": 0.7, "D5": 0.9, "E5": 1, "F5": 0.9, "D6": 0.8, "E6": 0.8, "F6": 0.8}, "point": "E5"}
+{"name": "COCO_train2014_000000330164", "subject": "dog looking through window", "cells": {"D4": 0.6, "E4": 0.7, "D5": 0.9, "E5": 1, "D6": 0.9, "E6": 1, "C5": 0.5, "F5": 0.5}, "point": "E5"}
+{"name": "COCO_train2014_000000331588", "subject": "shop assistant", "cells": {"C3": 0.5, "D3": 0.9, "E3": 0.9, "C4": 0.6, "D4": 1, "E4": 1, "C5": 0.6, "D5": 0.8, "E5": 0.8}, "point": "D4"}
+{"name": "COCO_train2014_000000333951", "subject": "child at harbor", "cells": {"B4": 0.7, "C4": 0.9, "B5": 0.9, "C5": 1, "B6": 0.8, "C6": 0.9, "D4": 0.6, "E4": 0.6, "F4": 0.6}, "point": "C5"}
+{"name": "COCO_train2014_000000335415", "subject": "beach umbrellas", "cells": {"B1": 0.6, "C1": 0.7, "D1": 0.7, "B2": 0.8, "C2": 0.9, "D2": 1, "E2": 0.9, "B3": 0.8, "C3": 0.9, "D3": 1, "E3": 0.9, "F3": 0.7, "B4": 0.7, "C4": 0.8, "D4": 0.9, "E4": 0.9}, "point": "D3"}
+{"name": "COCO_train2014_000000337594", "subject": "car showroom", "cells": {"C3": 0.6, "D3": 0.9, "E3": 1, "F3": 0.8, "C4": 0.7, "D4": 1, "E4": 1, "F4": 0.8, "C5": 0.6, "D5": 0.9, "E5": 1, "F5": 0.8, "D6": 0.8, "E6": 0.9, "F6": 0.8, "E7": 0.6, "F7": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000339633", "subject": "people in room", "cells": {"C2": 0.5, "D2": 0.9, "E2": 1, "C3": 0.6, "D3": 0.8, "E3": 0.8, "F3": 0.7, "C4": 0.6, "D4": 0.7, "E4": 0.7, "F4": 0.8}, "point": "D2"}
+{"name": "COCO_train2014_000000341087", "subject": "people in produce store", "cells": {"D4": 0.6, "E4": 0.6, "D5": 0.9, "E5": 1, "F5": 0.9, "D6": 0.9, "E6": 1, "F6": 0.9, "C5": 0.5, "C6": 0.6, "G5": 0.6, "G6": 0.6}, "point": "E5"}
+{"name": "COCO_train2014_000000343057", "subject": "skier in mountains", "cells": {"C3": 0.6, "D3": 0.6, "C4": 0.9, "D4": 0.9, "C5": 1, "D5": 1, "C6": 0.9, "D6": 0.9, "C7": 0.7, "D7": 0.7, "B4": 0.5, "B5": 0.6, "E4": 0.5, "E5": 0.6}, "point": "D5"}
+{"name": "COCO_train2014_000000344579", "subject": "skier on mountain", "cells": {"D5": 1, "E5": 1, "E4": 0.7, "D4": 0.5}, "point": "E5"}
+{"name": "COCO_train2014_000000346433", "subject": "woman with vegetables", "cells": {"B2": 1, "C2": 1, "B3": 1, "C3": 0.9, "D3": 0.6, "D2": 0.5}, "point": "C3"}
+{"name": "COCO_train2014_000000348904", "subject": "two people on driveway", "cells": {"D5": 1, "E5": 1, "E4": 0.7, "F5": 0.8, "F6": 0.6, "D4": 0.5}, "point": "E5"}
+{"name": "COCO_train2014_000000350077", "subject": "radio building facade", "cells": {"D5": 1, "E5": 1, "D4": 0.8, "E4": 0.8, "D6": 0.6, "E6": 0.6}, "point": "E5"}
+{"name": "COCO_train2014_000000352176", "subject": "food preparation with oranges", "cells": {"D7": 1, "C7": 0.9, "E7": 0.8, "C3": 0.7, "D3": 0.7, "E3": 0.6}, "point": "D7"}
+{"name": "COCO_train2014_000000354012", "subject": "woman with holiday decorations", "cells": {"D2": 1, "E2": 1, "E3": 1, "D3": 0.8, "D4": 0.7, "E5": 0.6}, "point": "E3"}
+{"name": "COCO_train2014_000000355727", "subject": "laptop and desk workspace", "cells": {"D2": 1, "C2": 0.9, "D3": 0.8, "C3": 0.8, "D4": 0.6, "C4": 0.6}, "point": "D2"}
+{"name": "COCO_train2014_000000357790", "subject": "yellow taxi with passengers", "cells": {"C3": 1, "B3": 0.8, "D3": 0.7, "B4": 0.6, "C4": 0.6}, "point": "C3"}
+{"name": "COCO_train2014_000000360273", "subject": "food bowls and ingredients", "cells": {"G7": 1, "E5": 0.9, "D3": 0.8, "E3": 0.8, "F5": 0.7, "E4": 0.6}, "point": "E5"}
+{"name": "COCO_train2014_000000362499", "subject": "bicycles on street", "cells": {"E5": 1, "F5": 1, "E4": 0.8, "F4": 0.8, "E6": 0.7, "F6": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000364833", "subject": "person with cargo tricycle", "cells": {"F2": 1, "G2": 0.9, "F3": 0.8, "G3": 0.7, "F4": 0.6, "G4": 0.5}, "point": "G2"}
+{"name": "COCO_train2014_000000366174", "subject": "car dashboard interior", "cells": {"D4": 1, "E4": 0.9, "D5": 0.8, "E5": 0.8, "D3": 0.6, "E3": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000368311", "subject": "forest landscape", "cells": {"D4": 1, "E4": 1, "D3": 0.8, "E3": 0.8, "D5": 0.7, "E5": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000369848", "subject": "wine bar with people and bottles", "cells": {"E4": 1, "D4": 0.9, "E5": 0.8, "D5": 0.8, "C3": 0.7, "B3": 0.6}, "point": "E4"}
+{"name": "COCO_train2014_000000371807", "subject": "bathroom sink", "cells": {"D4": 1, "E4": 1, "D3": 0.8, "E3": 0.8, "D5": 0.7, "E5": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000374174", "subject": "taxis on city street", "cells": {"D4": 1, "E4": 1, "D3": 0.8, "E3": 0.8, "C4": 0.6, "C3": 0.5}, "point": "E4"}
+{"name": "COCO_train2014_000000376084", "subject": "yellow construction truck", "cells": {"D4": 1, "E4": 1, "D3": 0.8, "E3": 0.8, "D5": 0.7, "E5": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000377578", "subject": "woman's face close-up", "cells": {"E3": 1, "D3": 1, "E4": 1, "D4": 1, "F3": 0.8, "F4": 0.8}, "point": "E3"}
+{"name": "COCO_train2014_000000379607", "subject": "woman in vehicle", "cells": {"F3": 1, "E3": 1, "F4": 1, "E4": 0.9, "F5": 0.8, "E5": 0.7}, "point": "F3"}
+{"name": "COCO_train2014_000000381458", "subject": "man's face close-up", "cells": {"C2": 1, "C3": 1, "D2": 1, "D3": 0.9, "B2": 0.8, "B3": 0.8}, "point": "C2"}
+{"name": "COCO_train2014_000000383250", "subject": "desk with multiple monitors", "cells": {"D3": 1, "E4": 1, "E3": 0.9, "D4": 0.8, "B4": 0.6, "C5": 0.5, "F5": 0.5, "G5": 0.5}, "point": "D3"}
+{"name": "COCO_train2014_000000385145", "subject": "bicycles parked together", "cells": {"C3": 0.9, "C4": 0.9, "D4": 1, "E4": 0.8, "E5": 0.8, "B4": 0.7, "F4": 0.6, "G4": 0.5, "B3": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000386854", "subject": "monitor with bright display", "cells": {"D2": 1, "E2": 1, "D3": 0.9, "E3": 0.9, "C3": 0.6, "C4": 0.5, "F3": 0.4}, "point": "D2"}
+{"name": "COCO_train2014_000000388412", "subject": "woman in office", "cells": {"D4": 1, "E4": 1, "E5": 0.9, "F4": 0.8, "D5": 0.7, "F5": 0.6}, "point": "E4"}
+{"name": "COCO_train2014_000000390125", "subject": "TV display with bright screens", "cells": {"D4": 1, "E4": 1, "D5": 0.9, "E5": 0.9, "F5": 0.7, "D3": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000392726", "subject": "red double-decker bus", "cells": {"D4": 1, "D5": 1, "C4": 0.9, "E4": 0.9, "E5": 0.8, "B3": 0.7, "C5": 0.6, "F4": 0.5}, "point": "D4"}
+{"name": "COCO_train2014_000000394889", "subject": "food truck with people", "cells": {"C3": 0.8, "C4": 0.9, "D4": 1, "D5": 0.9, "E5": 0.8, "B4": 0.6, "E4": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000396287", "subject": "street scene with traffic lights", "cells": {"D2": 1, "E2": 0.9, "D3": 0.8, "E3": 0.8, "C3": 0.6, "C2": 0.5}, "point": "D2"}
+{"name": "COCO_train2014_000000398214", "subject": "kitchen interior", "cells": {"D4": 1, "D3": 0.9, "E4": 0.9, "E5": 0.8, "C4": 0.6, "E3": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000401433", "subject": "two people in forest", "cells": {"D3": 1, "D4": 0.9, "E4": 0.9, "C4": 0.8, "E3": 0.7, "E5": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000403523", "subject": "people on elephant", "cells": {"D4": 1, "E4": 1, "D5": 0.9, "E5": 0.9, "D3": 0.8, "E3": 0.7, "C4": 0.5}, "point": "D4"}
+{"name": "COCO_train2014_000000405677", "subject": "trains at station", "cells": {"D3": 1, "D4": 0.9, "E4": 0.9, "C4": 0.8, "E3": 0.8, "C3": 0.6, "B4": 0.5}, "point": "D3"}
+{"name": "COCO_train2014_000000407434", "subject": "indoor room with sofa", "cells": {"D3": 1, "E3": 0.9, "E4": 0.9, "D4": 0.8, "F2": 0.6, "F3": 0.5, "C3": 0.5}, "point": "D3"}
+{"name": "COCO_train2014_000000408923", "subject": "tennis player on court", "cells": {"E5": 1, "E6": 0.9, "F5": 0.9, "F6": 0.8, "D5": 0.7, "D6": 0.6, "E4": 0.5}, "point": "E5"}
+{"name": "COCO_train2014_000000410805", "subject": "person looking at cooking", "cells": {"C3": 1, "D3": 1, "B3": 0.9, "D2": 0.8, "E5": 0.8, "E6": 0.8, "B2": 0.6}, "point": "D3"}
+{"name": "COCO_train2014_000000412681", "subject": "person with skateboard indoors", "cells": {"E3": 1, "E4": 0.9, "D3": 0.9, "E5": 0.8, "D4": 0.7, "C5": 0.6, "F4": 0.5}, "point": "E3"}
+{"name": "COCO_train2014_000000414706", "subject": "ski resort with people", "cells": {"B2": 1, "B3": 0.9, "C3": 0.8, "C4": 0.8, "D4": 0.9, "A2": 0.7, "E4": 0.6, "F4": 0.5}, "point": "B2"}
+{"name": "COCO_train2014_000000417295", "subject": "man in plaid shirt with wine", "cells": {"D2": 1, "D3": 1, "E2": 0.9, "E3": 0.9, "D4": 0.8, "E4": 0.7, "E5": 0.7, "D5": 0.6}, "point": "D2"}
+{"name": "COCO_train2014_000000419276", "subject": "person on elephant with umbrella", "cells": {"E3": 1, "E4": 1, "E5": 0.9, "D4": 0.8, "D5": 0.8, "F4": 0.7, "D3": 0.6}, "point": "E4"}
+{"name": "COCO_train2014_000000421241", "subject": "two people on couch watching TV", "cells": {"B3": 1, "C3": 1, "B4": 1, "C4": 0.9, "D3": 0.8, "D4": 0.8, "G3": 1, "G4": 0.9, "F4": 0.8}, "point": "C4"}
+{"name": "COCO_train2014_000000423778", "subject": "people at beach with drink", "cells": {"B6": 1, "C6": 1, "C5": 0.9, "D4": 0.7, "E4": 0.7, "E5": 0.7, "F4": 0.6, "G4": 0.6}, "point": "C6"}
+{"name": "COCO_train2014_000000425712", "subject": "person working at desk with laptop", "cells": {"B4": 1, "C4": 1, "C5": 0.9, "F3": 0.8, "F4": 0.8, "G4": 0.8}, "point": "C4"}
+{"name": "COCO_train2014_000000427467", "subject": "dog in truck window", "cells": {"D4": 1, "D5": 1, "E4": 0.9, "E5": 0.9, "C5": 0.7, "C6": 0.7, "D6": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000429111", "subject": "scattered books and objects", "cells": {"C2": 0.7, "D2": 0.7, "C3": 0.7, "D3": 0.7, "B4": 0.6, "C4": 0.8, "D4": 0.8, "E4": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000431553", "subject": "vegetables being prepared", "cells": {"B2": 0.7, "C2": 0.8, "D2": 0.8, "C3": 0.8, "D3": 0.8, "E2": 0.9, "F2": 1, "E3": 1, "F3": 0.9}, "point": "E3"}
+{"name": "COCO_train2014_000000433446", "subject": "prepared food plate", "cells": {"C3": 0.7, "D3": 0.8, "C4": 0.8, "D4": 0.9, "E4": 0.8, "C5": 0.8, "D5": 1, "E5": 0.9}, "point": "D5"}
+{"name": "COCO_train2014_000000435811", "subject": "yellow buses in depot", "cells": {"B4": 0.6, "C4": 0.7, "C5": 0.8, "D5": 0.9, "D6": 1, "E5": 0.8, "E6": 0.8, "F6": 0.7}, "point": "D6"}
+{"name": "COCO_train2014_000000437817", "subject": "group of people sitting", "cells": {"A4": 0.8, "B4": 1, "C4": 0.9, "D4": 0.8, "E4": 0.9, "F4": 0.9, "G4": 0.8}, "point": "E4"}
+{"name": "COCO_train2014_000000439865", "subject": "dog with bicycle", "cells": {"B6": 1, "C6": 0.9, "C7": 0.8, "D6": 0.8, "D7": 0.9, "D8": 0.8, "B3": 0.6, "C3": 0.6, "D3": 0.7}, "point": "D7"}
+{"name": "COCO_train2014_000000442089", "subject": "baseball game scene", "cells": {"E5": 1, "E6": 1, "D6": 0.7, "F6": 0.7, "G6": 0.8, "H6": 0.6}, "point": "E5"}
+{"name": "COCO_train2014_000000444269", "subject": "baseball batter", "cells": {"D5": 0.8, "E5": 1, "E6": 1, "E7": 0.9, "F7": 0.7}, "point": "E6"}
+{"name": "COCO_train2014_000000446075", "subject": "giraffe on truck", "cells": {"D4": 0.9, "E4": 1, "D5": 0.7, "E5": 0.8, "F5": 0.8}, "point": "E4"}
+{"name": "COCO_train2014_000000448558", "subject": "two children's faces", "cells": {"C3": 1, "D3": 1, "C4": 1, "D4": 1, "E3": 0.9, "E4": 0.8}, "point": "D3"}
+{"name": "COCO_train2014_000000450175", "subject": "baseball game with crowd", "cells": {"D5": 0.8, "E5": 1, "E6": 0.9, "D6": 0.8, "C5": 0.6, "D4": 0.5}, "point": "E5"}
+{"name": "COCO_train2014_000000451800", "subject": "pizza on plate", "cells": {"C4": 0.8, "D4": 0.9, "E4": 0.8, "C5": 0.9, "D5": 1, "E5": 0.9, "C6": 0.8, "D6": 0.8}, "point": "D5"}
+{"name": "COCO_train2014_000000453548", "subject": "sandwich in hand", "cells": {"B4": 0.9, "C4": 1, "D4": 0.9, "C5": 0.8, "D5": 0.8, "E5": 0.6, "B5": 0.7}, "point": "C4"}
+{"name": "COCO_train2014_000000455856", "subject": "people at festival with buildings", "cells": {"A6": 1, "B6": 0.9, "B7": 0.8, "B8": 0.7, "D3": 0.7, "D4": 0.8, "E3": 0.7, "E4": 0.7}, "point": "B6"}
+{"name": "COCO_train2014_000000458282", "subject": "bathroom interior", "cells": {"B5": 0.9, "C5": 0.8, "B6": 1, "C6": 0.9, "A5": 0.7, "A6": 0.6}, "point": "B6"}
+{"name": "COCO_train2014_000000460496", "subject": "child at computer", "cells": {"B3": 0.8, "C3": 0.9, "D3": 0.7, "B4": 0.9, "C4": 1, "D4": 0.8, "E5": 0.6, "F5": 0.6}, "point": "C4"}
+{"name": "COCO_train2014_000000462517", "subject": "small airplane in sky", "cells": {"F5": 1, "G5": 0.8}, "point": "F5"}
+{"name": "COCO_train2014_000000464079", "subject": "three people indoors", "cells": {"B4": 1, "B5": 1, "C4": 0.9, "C5": 0.9, "E5": 0.8, "F5": 0.8, "G4": 1, "G5": 1}, "point": "D5"}
+{"name": "COCO_train2014_000000466132", "subject": "room with appliances", "cells": {"F5": 1, "F6": 0.8, "G6": 0.8, "G7": 0.7}, "point": "F6"}
+{"name": "COCO_train2014_000000467753", "subject": "yellow excavator and people", "cells": {"B3": 1, "B4": 1, "B5": 0.9, "C3": 1, "C4": 1, "C5": 0.9, "E5": 0.7, "F5": 0.7}, "point": "C4"}
+{"name": "COCO_train2014_000000469762", "subject": "kitchen food items", "cells": {"B2": 0.8, "C2": 0.9, "D2": 1, "C3": 0.8, "D3": 0.9, "E3": 0.8, "C4": 0.8, "D4": 0.9, "E4": 0.8}, "point": "D3"}
+{"name": "COCO_train2014_000000471345", "subject": "plates with food", "cells": {"C3": 1, "D3": 0.9, "F3": 0.8, "G3": 0.9, "C4": 0.8, "D4": 0.8, "F4": 0.8, "G4": 0.8, "B5": 0.7, "C5": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000472639", "subject": "desk with monitors", "cells": {"D3": 1, "D4": 0.9, "E3": 0.9, "E4": 0.9, "D5": 0.8, "G2": 0.8, "G3": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000474446", "subject": "cat on floor", "cells": {"E5": 1, "E6": 0.9, "D5": 0.7, "F5": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000476517", "subject": "helicopter with ground crew", "cells": {"E1": 1, "E2": 1, "E3": 0.9, "E4": 0.9, "E5": 0.8, "C5": 0.7, "D5": 0.7, "F5": 0.7}, "point": "E3"}
+{"name": "COCO_train2014_000000478741", "subject": "man at beach", "cells": {"C2": 1, "C3": 1, "C4": 1, "C5": 0.9, "C6": 0.9, "C7": 0.8}, "point": "C4"}
+{"name": "COCO_train2014_000000480991", "subject": "cat in person's arms", "cells": {"D3": 1, "E3": 1, "E4": 0.8, "F4": 0.6}, "point": "E3"}
+{"name": "COCO_train2014_000000482545", "subject": "interior with furniture", "cells": {"D3": 0.9, "E3": 0.8, "F3": 0.8, "G3": 0.8, "D4": 0.8, "E4": 0.8, "F4": 0.8}, "point": "E4"}
+{"name": "COCO_train2014_000000484506", "subject": "people at social gathering", "cells": {"B2": 0.8, "C2": 0.8, "D2": 0.8, "C3": 0.9, "D3": 0.9, "E3": 0.9, "C4": 0.8, "D4": 0.8, "E4": 0.8, "D5": 0.7, "E5": 0.7, "F5": 0.7}, "point": "D3"}
+{"name": "COCO_train2014_000000486545", "subject": "outdoor carnival crowd", "cells": {"A1": 0.8, "B5": 0.9, "C5": 0.9, "D5": 0.9, "E5": 0.8, "F5": 0.8, "F2": 0.8, "G2": 0.7, "G3": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000488390", "subject": "laptop computer", "cells": {"C3": 1, "D3": 0.9, "D4": 0.9, "E3": 0.9, "E4": 0.9, "D5": 0.8, "E5": 0.8}, "point": "D4"}
+{"name": "COCO_train2014_000000490328", "subject": "airport runway and planes", "cells": {"D5": 0.8, "E5": 0.9, "E6": 0.8, "F5": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000492178", "subject": "pizza on plate", "cells": {"C4": 1, "D4": 1, "E4": 0.9, "F4": 0.9, "C5": 1, "D5": 1, "E5": 0.9, "F5": 0.9, "C6": 0.9, "D6": 0.9, "E6": 0.8, "F6": 0.8, "D7": 0.8, "E7": 0.8}, "point": "D5"}
+{"name": "COCO_train2014_000000494217", "subject": "interior wall with photos", "cells": {"D2": 1, "E2": 0.9, "D3": 0.9, "E3": 0.8, "F3": 0.8, "D4": 0.8, "E4": 0.8, "F4": 0.7}, "point": "E3"}
+{"name": "COCO_train2014_000000495956", "subject": "skier with red beanie", "cells": {"F2": 1, "F3": 1, "E3": 0.8, "E2": 0.7, "C5": 0.6, "D5": 0.6}, "point": "F2"}
+{"name": "COCO_train2014_000000497274", "subject": "two vehicles on road", "cells": {"B3": 0.9, "B4": 0.9, "C3": 0.8, "C4": 0.8, "C5": 0.8, "D4": 1, "E4": 0.9, "E5": 0.8, "E6": 0.8, "F4": 0.8, "F5": 0.8, "F6": 0.8}, "point": "E5"}
+{"name": "COCO_train2014_000000499913", "subject": "gaming controller", "cells": {"D2": 0.8, "E2": 1, "F2": 0.9, "D3": 1, "E3": 1, "F3": 1, "G3": 0.8, "D4": 1, "E4": 1, "F4": 1, "G4": 0.7}, "point": "E3"}
+{"name": "COCO_train2014_000000501441", "subject": "London bus", "cells": {"D2": 0.9, "E2": 1, "F2": 0.9, "D3": 1, "E3": 1, "F3": 1, "D4": 1, "E4": 1, "F4": 1, "D5": 0.8, "E5": 0.8, "F5": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000502894", "subject": "woman on bicycle with dog", "cells": {"D2": 1, "D3": 1, "E3": 0.8, "D4": 0.9, "C4": 0.7, "C5": 0.8, "D5": 0.7, "D6": 0.6, "E5": 0.6, "E6": 0.6, "F5": 0.5}, "point": "D2"}
+{"name": "COCO_train2014_000000504974", "subject": "pelican", "cells": {"B3": 0.8, "C3": 0.7, "B4": 1, "C4": 0.9, "B5": 0.8, "C5": 0.7}, "point": "B4"}
+{"name": "COCO_train2014_000000506641", "subject": "person cooking", "cells": {"E2": 0.9, "F2": 0.8, "E3": 1, "F3": 1, "D3": 0.7, "D4": 0.7, "E4": 0.8, "F4": 0.7, "D5": 0.6, "E5": 0.6}, "point": "E3"}
+{"name": "COCO_train2014_000000509394", "subject": "person on motorcycle", "cells": {"D4": 0.8, "E4": 0.7, "D5": 1, "E5": 1, "D6": 0.9, "E6": 0.8, "C5": 0.5}, "point": "D5"}
+{"name": "COCO_train2014_000000511165", "subject": "kitchen appliances", "cells": {"D3": 0.7, "E3": 0.6, "D4": 0.8, "E4": 0.7, "D5": 0.8, "E5": 0.8, "D6": 0.8, "E6": 0.7, "F4": 0.6, "F5": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000513449", "subject": "Nathan's hot dog stand storefront", "cells": {"D3": 0.9, "E3": 0.8, "D4": 1, "E4": 1, "D5": 0.8, "E5": 0.8, "C4": 0.5}, "point": "D4"}
+{"name": "COCO_train2014_000000515260", "subject": "baseball batter", "cells": {"E3": 0.8, "E4": 1, "E5": 0.9, "F3": 0.8, "F4": 1, "F5": 0.9, "D5": 0.5, "G4": 0.5, "H4": 0.5}, "point": "E4"}
+{"name": "COCO_train2014_000000517370", "subject": "person with luggage", "cells": {"D4": 0.8, "E4": 0.7, "D5": 1, "E5": 0.9, "D6": 0.8, "E6": 0.7, "C5": 0.5}, "point": "D5"}
+{"name": "COCO_train2014_000000519234", "subject": "television in room", "cells": {"D3": 1, "E3": 1, "D4": 0.9, "E4": 0.9, "C3": 0.5, "C4": 0.5, "F3": 0.5}, "point": "D3"}
+{"name": "COCO_train2014_000000521808", "subject": "furniture and architecture", "cells": {"C4": 0.6, "C5": 0.7, "D5": 1, "D6": 1, "D7": 0.9, "E6": 0.8, "E7": 0.8, "F5": 0.6, "F6": 0.7, "F7": 0.6}, "point": "D5"}
+{"name": "COCO_train2014_000000523919", "subject": "computer monitor and desk", "cells": {"B2": 0.7, "B3": 0.8, "C2": 0.9, "C3": 1, "D2": 0.8, "D3": 0.9, "D5": 0.6, "E5": 0.6, "D8": 0.5, "E8": 0.5}, "point": "C3"}
+{"name": "COCO_train2014_000000525865", "subject": "refrigerators", "cells": {"C2": 0.8, "C3": 0.9, "C4": 0.9, "C5": 0.8, "D2": 0.8, "D3": 1, "D4": 1, "D5": 0.9, "E2": 0.7, "E3": 0.8, "E4": 0.8, "E5": 0.7}, "point": "D3"}
+{"name": "COCO_train2014_000000528243", "subject": "person on bicycle", "cells": {"C3": 0.9, "C4": 1, "C5": 0.8, "D4": 0.9, "D5": 0.8, "B4": 0.5}, "point": "C4"}
+{"name": "COCO_train2014_000000530002", "subject": "computer monitor and workspace", "cells": {"A1": 0.5, "B1": 0.6, "B2": 0.5, "F3": 0.9, "F4": 1, "G3": 1, "G4": 0.9, "E5": 0.6, "E6": 0.6, "D5": 0.5}, "point": "G3"}
+{"name": "COCO_train2014_000000532062", "subject": "people preparing food", "cells": {"D2": 0.9, "D3": 1, "D4": 0.8, "E2": 0.9, "E3": 1, "E4": 0.9, "D5": 0.8, "D6": 0.9, "D7": 0.8, "E5": 0.7, "E6": 0.8, "E7": 0.7}, "point": "D3"}
+{"name": "COCO_train2014_000000533686", "subject": "cat in crate", "cells": {"C3": 0.8, "C4": 0.9, "C5": 0.8, "D3": 0.9, "D4": 1, "D5": 0.9, "E3": 0.8, "E4": 0.9, "E5": 0.8, "B3": 0.5}, "point": "D4"}
+{"name": "COCO_train2014_000000535874", "subject": "room with art and decorations", "cells": {"B3": 0.7, "B4": 0.6, "C3": 0.7, "C4": 0.6, "D4": 1, "D5": 0.9, "E3": 0.8, "E4": 0.8, "E5": 0.7, "F4": 0.6, "F5": 0.5, "C5": 0.5}, "point": "D4"}
+{"name": "COCO_train2014_000000537807", "subject": "pastries in display", "cells": {"C3": 0.8, "C4": 0.9, "C5": 0.8, "D3": 0.9, "D4": 1, "D5": 0.9, "E3": 0.8, "E4": 0.9, "E5": 0.8, "D6": 0.7, "E6": 0.7, "C6": 0.6, "B4": 0.5, "B5": 0.5}, "point": "D4"}
+{"name": "COCO_train2014_000000539242", "subject": "food truck with sign", "cells": {"C4": 1, "D4": 1, "E4": 0.9, "C5": 0.7, "D5": 0.7, "E5": 0.7, "C6": 0.6, "D6": 0.6, "E6": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000541077", "subject": "person on motorcycle", "cells": {"E4": 1, "F4": 0.9, "E5": 0.8, "F5": 0.8, "E6": 0.6, "F6": 0.6}, "point": "E4"}
+{"name": "COCO_train2014_000000542582", "subject": "construction crane and building", "cells": {"D4": 1, "E4": 0.9, "D5": 0.8, "E5": 0.8, "D6": 0.7, "E6": 0.7, "C5": 0.5}, "point": "E4"}
+{"name": "COCO_train2014_000000543986", "subject": "two men with cap", "cells": {"F3": 1, "F4": 1, "E3": 0.8, "E4": 0.8, "F5": 0.7, "E5": 0.7, "B3": 0.6, "C3": 0.6, "C4": 0.6}, "point": "F4"}
+{"name": "COCO_train2014_000000546046", "subject": "double-decker buses", "cells": {"B5": 0.8, "C5": 0.8, "D5": 0.8, "E5": 1, "F5": 1, "G5": 0.8, "H5": 0.8, "B6": 0.7, "C6": 0.7, "D6": 0.7, "E6": 0.7, "F6": 0.8, "G6": 0.8}, "point": "E5"}
+{"name": "COCO_train2014_000000548153", "subject": "street with buildings and police sign", "cells": {"D4": 0.8, "D5": 0.8, "E4": 0.8, "E5": 0.8, "F5": 0.8, "E7": 1, "F7": 0.9}, "point": "E5"}
+{"name": "COCO_train2014_000000549810", "subject": "people with dog", "cells": {"D4": 1, "E4": 0.9, "D5": 0.9, "E5": 0.9, "C5": 0.7, "D6": 0.7, "E6": 0.7, "F4": 0.6, "F5": 0.6, "G4": 0.6, "G5": 0.6}, "point": "D4"}
+{"name": "COCO_train2014_000000551364", "subject": "zebra head close-up", "cells": {"D3": 0.9, "D4": 1, "D5": 0.9, "E3": 0.9, "E4": 1, "E5": 0.9, "C4": 0.7, "C5": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000553373", "subject": "person with horse at event", "cells": {"D4": 1, "D5": 1, "D6": 0.9, "E4": 0.9, "E5": 0.8, "F3": 0.7, "F4": 0.7, "G4": 0.6, "G5": 0.6, "H4": 0.6}, "point": "D5"}
+{"name": "COCO_train2014_000000555118", "subject": "street with Harley-Davidson sign and shops", "cells": {"D4": 1, "E4": 1, "D5": 0.8, "E5": 0.8, "F5": 0.8, "D6": 0.7, "E6": 0.7, "F6": 0.7, "D7": 0.6, "E7": 0.6, "F7": 0.6}, "point": "E4"}
+{"name": "COCO_train2014_000000557678", "subject": "screens showing maps", "cells": {"D2": 0.8, "D3": 0.8, "D4": 1, "E2": 0.8, "E3": 0.8, "E4": 1, "G3": 0.8, "G4": 0.8, "H3": 0.8, "H4": 0.8}, "point": "E4"}
+{"name": "COCO_train2014_000000559733", "subject": "plate of food", "cells": {"D3": 0.8, "E3": 0.8, "F3": 0.8, "D4": 0.9, "E4": 1, "F4": 1, "G4": 0.8, "D5": 0.8, "E5": 0.9, "F5": 0.9, "E6": 0.7, "F6": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000561251", "subject": "kite and person on beach", "cells": {"D3": 0.8, "F3": 0.8, "B6": 0.9, "E5": 1, "F5": 0.9, "G5": 0.8, "G6": 0.8, "E6": 0.8, "F6": 0.8}, "point": "E5"}
+{"name": "COCO_train2014_000000562817", "subject": "motorcycle rally with people", "cells": {"D5": 0.8, "E5": 1, "F5": 0.9, "G5": 0.8, "D6": 0.8, "E6": 0.9, "F6": 0.9, "G6": 0.7, "C5": 0.7}, "point": "E5"}
+{"name": "COCO_train2014_000000564267", "subject": "three people indoors", "cells": {"C3": 0.9, "D3": 1, "D2": 0.8, "D4": 0.9, "E3": 0.9, "E4": 0.8, "F3": 0.9, "F4": 0.9, "F5": 0.8, "C4": 0.7}, "point": "D3"}
+{"name": "COCO_train2014_000000566375", "subject": "London Parliament and Big Ben", "cells": {"B5": 0.7, "C5": 0.7, "D5": 0.7, "E5": 0.7, "B6": 0.7, "C6": 0.7, "D6": 0.7, "E6": 0.7, "F6": 0.8, "F5": 1, "F4": 0.9}, "point": "F5"}
+{"name": "COCO_train2014_000000568155", "subject": "close-up of person face", "cells": {"D3": 0.9, "E3": 0.9, "D4": 1, "E4": 1, "D5": 0.8, "E5": 0.8, "C3": 0.7, "C4": 0.7}, "point": "E4"}
+{"name": "COCO_train2014_000000570141", "subject": "desk with keyboard and equipment", "cells": {"D5": 0.8, "E5": 1, "F5": 0.8, "D6": 0.8, "E6": 0.9, "F6": 0.8, "D7": 0.8, "E7": 0.8, "D8": 0.7, "E8": 0.7}, "point": "E6"}
+{"name": "COCO_train2014_000000572121", "subject": "collection of electronics and camera", "cells": {"C2": 0.8, "D2": 0.8, "D3": 0.9, "C3": 0.8, "C4": 0.8, "D4": 1, "D5": 0.8, "E5": 0.7, "F4": 0.7, "F5": 0.6, "G2": 0.7, "G3": 0.7}, "point": "D4"}
+{"name": "COCO_train2014_000000574153", "subject": "bananas and yellow monkey toy", "cells": {"B2": 0.8, "D2": 0.8, "E2": 0.8, "F1": 0.8, "G1": 0.8, "B3": 0.8, "D3": 0.8, "E3": 0.8, "F3": 0.7, "D5": 0.8, "E5": 0.9, "E6": 0.9, "E7": 1}, "point": "E7"}

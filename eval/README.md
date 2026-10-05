@@ -24,6 +24,12 @@ research and evaluation only. Don't redistribute them.
 | MSRA10K | 10000 | binary masks | Easy, single and mostly centred subjects. |
 | SALICON | 5000 | mouse-tracking attention maps | COCO val2014, cluttered everyday scenes, often no single subject. |
 
+For training only, `fetch.sh SALICON-TR DUTS-TR` adds the 10,000 SALICON
+train images (COCO train2014, maps from
+[dogsteven/salicon-maps-train](https://github.com/dogsteven/salicon-maps-train))
+and the 10,553 DUTS-TR images. `fetch.sh LLM` fetches the images behind the
+LLM labelling experiment, see [llm/README.md](llm/README.md).
+
 Sources and citations:
 
 - **ECSSD**: [total-black/U2Net-ECSSD-Evaluation](https://github.com/total-black/U2Net-ECSSD-Evaluation).
